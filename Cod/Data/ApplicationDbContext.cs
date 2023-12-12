@@ -5,7 +5,7 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace Cod.Data
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class ApplicationDbContext : IdentityDbContext<Profile>
     {
         public DbSet<Group> Groups { get; set; }
         public DbSet<Profile> Profiles { get; set; }

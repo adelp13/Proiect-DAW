@@ -9,7 +9,7 @@ namespace Cod.Models
         public DateTime CreationDate { get; set; }
         [Required(ErrorMessage = "Message content required!")]
         public string Content { get; set; }
-        public int ProfileID { get; set; }
+        public string ProfileID { get; set; }
         public Profile Profile { get; set; }
         public int GroupID { get; set; }
         public Group Group { get; set; }

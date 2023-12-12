@@ -12,5 +12,7 @@ namespace Cod.Models
         //public virtual ICollection<Profile> Follows { get; set; }
         //public virtual ICollection<Profile> Follow_Requests { get; set; }
         public virtual ICollection<Message> Messages { get; set; }
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
     }
 }
