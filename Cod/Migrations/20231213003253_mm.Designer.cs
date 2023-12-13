@@ -4,6 +4,7 @@ using Cod.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Cod.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231213003253_mm")]
+    partial class mm
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,39 +24,13 @@ namespace Cod.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("Cod.Models.Comment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("CommentContent")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CommentDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ProfileId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProfileId");
-
-                    b.ToTable("Comment");
-                });
-
             modelBuilder.Entity("Cod.Models.Group", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
 
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
@@ -67,18 +43,18 @@ namespace Cod.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("ID");
 
                     b.ToTable("Groups");
                 });
 
-            modelBuilder.Entity("Cod.Models.Post", b =>
+            modelBuilder.Entity("Cod.Models.Message", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
 
                     b.Property<string>("Content")
                         .IsRequired()
@@ -87,20 +63,20 @@ namespace Cod.Migrations
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("GroupId")
+                    b.Property<int>("GroupID")
                         .HasColumnType("int");
 
-                    b.Property<string>("ProfileId")
+                    b.Property<string>("ProfileID")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("Id");
+                    b.HasKey("ID");
 
-                    b.HasIndex("GroupId");
+                    b.HasIndex("GroupID");
 
-                    b.HasIndex("ProfileId");
+                    b.HasIndex("ProfileID");
 
-                    b.ToTable("Post");
+                    b.ToTable("Message");
                 });
 
             modelBuilder.Entity("Cod.Models.Profile", b =>
@@ -179,13 +155,13 @@ namespace Cod.Migrations
 
             modelBuilder.Entity("GroupProfile", b =>
                 {
-                    b.Property<int>("GroupsId")
+                    b.Property<int>("GroupsID")
                         .HasColumnType("int");
 
                     b.Property<string>("ProfilesId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("GroupsId", "ProfilesId");
+                    b.HasKey("GroupsID", "ProfilesId");
 
                     b.HasIndex("ProfilesId");
 
@@ -329,28 +305,17 @@ namespace Cod.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Cod.Models.Comment", b =>
-                {
-                    b.HasOne("Cod.Models.Profile", "Profile")
-                        .WithMany("Comments")
-                        .HasForeignKey("ProfileId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Profile");
-                });
-
-            modelBuilder.Entity("Cod.Models.Post", b =>
+            modelBuilder.Entity("Cod.Models.Message", b =>
                 {
                     b.HasOne("Cod.Models.Group", "Group")
-                        .WithMany("Posts")
-                        .HasForeignKey("GroupId")
+                        .WithMany("Messages")
+                        .HasForeignKey("GroupID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Cod.Models.Profile", "Profile")
-                        .WithMany()
-                        .HasForeignKey("ProfileId")
+                        .WithMany("Messages")
+                        .HasForeignKey("ProfileID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -363,7 +328,7 @@ namespace Cod.Migrations
                 {
                     b.HasOne("Cod.Models.Group", null)
                         .WithMany()
-                        .HasForeignKey("GroupsId")
+                        .HasForeignKey("GroupsID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -427,12 +392,12 @@ namespace Cod.Migrations
 
             modelBuilder.Entity("Cod.Models.Group", b =>
                 {
-                    b.Navigation("Posts");
+                    b.Navigation("Messages");
                 });
 
             modelBuilder.Entity("Cod.Models.Profile", b =>
                 {
-                    b.Navigation("Comments");
+                    b.Navigation("Messages");
                 });
 #pragma warning restore 612, 618
         }

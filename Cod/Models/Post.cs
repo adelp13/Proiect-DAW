@@ -2,16 +2,16 @@
 
 namespace Cod.Models
 {
-    public class Message
+    public class Post
     {
         [Key]
-        public int ID { get; set; }
+        public int Id { get; set; }
         public DateTime CreationDate { get; set; }
         [Required(ErrorMessage = "Message content required!")]
         public string Content { get; set; }
-        public string ProfileID { get; set; }
-        public Profile Profile { get; set; }
-        public int GroupID { get; set; }
+        public string ProfileId { get; set; }
+        public ApplicationUser Profile { get; set; }
+        public int GroupId { get; set; }
         public Group Group { get; set; }
 
     }

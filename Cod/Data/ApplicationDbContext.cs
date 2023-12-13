@@ -5,14 +5,39 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace Cod.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<Profile>
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
-        public DbSet<Group> Groups { get; set; }
-        public DbSet<Profile> Profiles { get; set; }
-
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
         }
+        public DbSet<Group> Groups { get; set; }
+        public DbSet<ApplicationUser> Profiles { get; set; }
+        /*
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            // definirea relatiei many-to-many Profile urmareste profile
+
+            base.OnModelCreating(modelBuilder);
+
+            // definire primary key compus
+            modelBuilder.Entity<Follows>()
+                .HasKey(ab => new { ab.Id, ab.Id, ab.Id });
+
+
+            // definire relatii cu modelele Profile si Profile (FK)
+
+            modelBuilder.Entity<Follows>()
+                .HasOne(ab => ab.Id)
+                .WithMany(ab => ab.Follows)
+                .HasForeignKey(ab => ab.Id);
+
+            modelBuilder.Entity<Follows>()
+                .HasOne(ab => ab.Id)
+                .WithMany(ab => ab.Follows)
+                .HasForeignKey(ab => ab.Id);
+        }
+        */
+    
     }
 }
