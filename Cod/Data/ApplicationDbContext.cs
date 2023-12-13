@@ -13,6 +13,8 @@ namespace Cod.Data
         }
         public DbSet<Group> Groups { get; set; }
         public DbSet<ApplicationUser> Profiles { get; set; }
+        public DbSet<Comment> Comments { get; set; }
+        public DbSet<Post> Posts { get; set; }
         /*
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
