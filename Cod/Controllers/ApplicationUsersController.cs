@@ -4,12 +4,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Cod.Controllers
 {
-    public class ApplicationUserController : Controller
+    public class ApplicationUsersController : Controller
     {
 
         private readonly ApplicationDbContext db;
 
-        public ApplicationUserController(ApplicationDbContext _db)
+        public ApplicationUsersController(ApplicationDbContext _db)
         {
             db = _db;
         }

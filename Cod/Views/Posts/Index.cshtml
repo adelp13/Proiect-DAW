@@ -1,0 +1,9 @@
+﻿<h1>Salut lume!</h1>
+
+@foreach (Cod.Models.Post post in ViewBag.Posts)
+{
+    <div class="card">
+        @Html.Partial("PostContent", post)
+    </div>
+    <br />
+}
