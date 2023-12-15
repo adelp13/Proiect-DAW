@@ -1,0 +1,31 @@
+﻿@model Cod.Models.Group
+
+@{
+    ViewBag.Title = "Add group";
+}
+
+<h2> @ViewBag.Title </h2>
+
+@using (Html.BeginForm(actionName: "New", controllerName: "Groups", method: FormMethod.Post))
+{
+
+    @Html.Label("GroupName", "Name of group")
+    <br />
+
+    @Html.TextBox("GroupName", null, new { @class = "form-control" })
+
+    @Html.ValidationMessageFor(m => m.GroupName, null, new { @class = "text-danger" })
+
+    @Html.Label("DescriptionGroup", "Description of group")
+    <br />
+
+    @Html.TextBox("DescriptionName", null, new { @class = "form-control" })
+
+    <br />
+    <br />
+
+    <button class="btn btn-success" type="submit">Adauga categorie</button>
+
+}
+
+

@@ -1,0 +1,25 @@
+﻿model Cod.Models.Group
+@{
+    ViewBag.Title = "Show Group";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<br />
+
+<p>@Model.GroupName</p>
+<p> @Model.GroupDescription </p>
+@*<span> @Model.Posts.count </span> *@
+<form method="post" action="/Groups/Delete/@Model.Id">
+
+    <button class="btn btn-danger" type = "submit"> Delete current group </button>
+
+</form>
+
+<br />
+<a class="btn alert-success" href="/Groups/Index/"> Show all groups </a>
+
+<br />
+<hr />
+<br />
+

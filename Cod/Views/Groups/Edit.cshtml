@@ -1,0 +1,27 @@
+﻿@model Cod.Models.Group
+
+@{
+    ViewBag.Title = "Edit group";
+}
+
+<h2> @ViewBag.Title </h2>
+
+
+@using (Html.BeginForm(controllerName: "Groups", actionName: "Edit", method: FormMethod.Post,
+      routeValues: new { id = Model.Id }))
+{
+    @Html.Label("GroupName", "Name of group")
+    <br />
+    @Html.Editor("GroupName")
+
+    @Html.ValidationMessageFor(m => m.GroupName, null, new { @class = "text-danger" })
+    <br />
+    <br />
+    @Html.Label("DescriptionName", "Description of group")
+    <br />
+    @Html.Editor("DescriptionName")
+
+    <button class="btn btn-success" type="submit"> Edit group </button>
+}
+
+
