@@ -3,3 +3,10 @@
 <div class="card">
     @Html.Partial("PostContent", Model) 
 </div>
+
+<div class="card">
+    @foreach (Comment comment in Model.Comments)
+    {
+        @Html.Partial("CommentContent", comment)
+    }
+</div>

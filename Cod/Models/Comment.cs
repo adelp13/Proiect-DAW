@@ -9,9 +9,10 @@ namespace Cod.Models
         [Key]
         public int Id { get; set; }
         public string ProfileId { get; set; }
-        public ApplicationUser Profile { get; set; }
+        public virtual ApplicationUser? Profile { get; set; }
         [Required(ErrorMessage = "Comment Content Required")]
-        public string CommentContent { get; set; }
-        public DateTime CommentDate { get; set; }
+        public string Content { get; set; }
+        public DateTime CreationDate { get; set; }
+        public int? PostId { get; set; }
     }
 }

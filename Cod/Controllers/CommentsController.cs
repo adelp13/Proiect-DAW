@@ -6,21 +6,23 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Cod.Controllers
 {
-    public class PostsController : Controller
+    public class CommentsController : Controller
     {
         private readonly ApplicationDbContext db;
         private readonly UserManager<ApplicationUser> um;
 
-        public PostsController(ApplicationDbContext _db, UserManager<ApplicationUser> _um)
+        public CommentsController(ApplicationDbContext _db, UserManager<ApplicationUser> _um)
         {
             db = _db;
             um = _um;
         }
 
+        // TODO debug method
+
         public IActionResult Index()
         {
-            var posts = db.Posts.Include("Profile").Include("Comments").Include("Comments.Profile").OrderBy(x => x.CreationDate);
-            ViewBag.Posts = posts;
+            var comments = db.Comments.Include("Profile").OrderBy(x => x.CreationDate);
+            ViewBag.Comments = comments;
 
             return View();
         }
@@ -28,35 +30,35 @@ namespace Cod.Controllers
         [HttpGet]
         public IActionResult Show(int id)
         {
-            Post post = db.Posts.Include("Profile").Include("Comments").Include("Comments.Profile").Where(x => x.Id == id).First();
-            return View(post);
+            Comment comment = db.Comments.Include("Profile").Where(x => x.Id == id).First();
+            return View(comment);
         }
 
         // TODO link comment with post
 
         [HttpPost]
-        public IActionResult Show([FromForm] Post post)
+        public IActionResult Show([FromForm] Comment comment)
         {
-            return View(post);
+            return View(comment);
         }
 
         [HttpGet]
         public IActionResult New(int id)
         {
-            Post post = new Post();
-            return View(post);
+            Comment comment = new Comment();
+            return View(comment);
         }
 
         [HttpPost]
-        public IActionResult New(Post post)
+        public IActionResult New(Comment comment)
         {
             // TODO validate ModelState.IsValid
             // brute force values
-            post.ProfileId = um.GetUserId(User);
-            post.CreationDate = DateTime.Now;
+            comment.ProfileId = um.GetUserId(User);
+            comment.CreationDate = DateTime.Now;
             // TODO hardcodat
-            post.GroupId = 1;
-            db.Posts.Add(post);
+            comment.PostId = 2;
+            db.Comments.Add(comment);
             db.SaveChanges();
             return RedirectToAction("Index");
         }
@@ -66,16 +68,16 @@ namespace Cod.Controllers
         [HttpGet]
         public IActionResult Edit(int id)
         {
-            Post post = db.Posts.Include("Profile").Where(x => x.Id == id).First();
+            Comment comment = db.Comments.Where(x => x.Id == id).First();
 
-            return View(post);
+            return View(comment);
         }
 
         [HttpPost]
-        public IActionResult Edit(int id, Post reqPost)
+        public IActionResult Edit(int id, Comment reqComment)
         {
-            Post post = db.Posts.Find(id);
-            post.Content = reqPost.Content;
+            Comment comment = db.Comments.Find(id);
+            comment.Content = reqComment.Content;
             db.SaveChanges();
             return RedirectToAction("Index");
         }
@@ -83,8 +85,8 @@ namespace Cod.Controllers
         [HttpPost]
         public IActionResult Delete(int id)
         {
-            Post post = db.Posts.Where(x => x.Id == id).First();
-            db.Posts.Remove(post);
+            Comment comment = db.Comments.Where(x => x.Id == id).First();
+            db.Comments.Remove(comment);
             db.SaveChanges();
             return RedirectToAction("Index");
         }

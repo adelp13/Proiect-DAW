@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Cod.Migrations
 {
-    public partial class first : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -29,8 +29,8 @@ namespace Cod.Migrations
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     isPrivate = table.Column<bool>(type: "bit", nullable: false),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -55,7 +55,7 @@ namespace Cod.Migrations
                 name: "Groups",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -63,7 +63,7 @@ namespace Cod.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Groups", x => x.ID);
+                    table.PrimaryKey("PK_Groups", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -173,56 +173,86 @@ namespace Cod.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "GroupProfile",
+                name: "ApplicationUserGroup",
                 columns: table => new
                 {
-                    GroupsID = table.Column<int>(type: "int", nullable: false),
+                    GroupsId = table.Column<int>(type: "int", nullable: false),
                     ProfilesId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_GroupProfile", x => new { x.GroupsID, x.ProfilesId });
+                    table.PrimaryKey("PK_ApplicationUserGroup", x => new { x.GroupsId, x.ProfilesId });
                     table.ForeignKey(
-                        name: "FK_GroupProfile_AspNetUsers_ProfilesId",
+                        name: "FK_ApplicationUserGroup_AspNetUsers_ProfilesId",
                         column: x => x.ProfilesId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_GroupProfile_Groups_GroupsID",
-                        column: x => x.GroupsID,
+                        name: "FK_ApplicationUserGroup_Groups_GroupsId",
+                        column: x => x.GroupsId,
                         principalTable: "Groups",
-                        principalColumn: "ID",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Message",
+                name: "Posts",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ProfileID = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    GroupID = table.Column<int>(type: "int", nullable: false)
+                    ProfileId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    GroupId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Message", x => x.ID);
+                    table.PrimaryKey("PK_Posts", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Message_AspNetUsers_ProfileID",
-                        column: x => x.ProfileID,
+                        name: "FK_Posts_AspNetUsers_ProfileId",
+                        column: x => x.ProfileId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Posts_Groups_GroupId",
+                        column: x => x.GroupId,
+                        principalTable: "Groups",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Comments",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProfileId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PostId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Comments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Comments_AspNetUsers_ProfileId",
+                        column: x => x.ProfileId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Message_Groups_GroupID",
-                        column: x => x.GroupID,
-                        principalTable: "Groups",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
+                        name: "FK_Comments_Posts_PostId",
+                        column: x => x.PostId,
+                        principalTable: "Posts",
+                        principalColumn: "Id");
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ApplicationUserGroup_ProfilesId",
+                table: "ApplicationUserGroup",
+                column: "ProfilesId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -264,23 +294,31 @@ namespace Cod.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GroupProfile_ProfilesId",
-                table: "GroupProfile",
-                column: "ProfilesId");
+                name: "IX_Comments_PostId",
+                table: "Comments",
+                column: "PostId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Message_GroupID",
-                table: "Message",
-                column: "GroupID");
+                name: "IX_Comments_ProfileId",
+                table: "Comments",
+                column: "ProfileId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Message_ProfileID",
-                table: "Message",
-                column: "ProfileID");
+                name: "IX_Posts_GroupId",
+                table: "Posts",
+                column: "GroupId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Posts_ProfileId",
+                table: "Posts",
+                column: "ProfileId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "ApplicationUserGroup");
+
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -297,13 +335,13 @@ namespace Cod.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "GroupProfile");
-
-            migrationBuilder.DropTable(
-                name: "Message");
+                name: "Comments");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Posts");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

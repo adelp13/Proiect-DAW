@@ -1,0 +1,9 @@
+﻿<h1>Salut lume!</h1>
+
+@foreach (Cod.Models.Comment comment in ViewBag.Comments)
+{
+    <div class="card">
+        @Html.Partial("CommentContent", comment)
+    </div>
+    <br />
+}
