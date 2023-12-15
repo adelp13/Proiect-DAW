@@ -21,14 +21,14 @@ namespace Cod.Controllers
                 ViewBag.message = TempData["message"].ToString();
             }
 
-            var groups = db.Groups.Include("Post").Include("Comment");
+            var groups = db.Groups.Include("Posts").Include("Posts.Comments");
             ViewBag.Groups = groups;
             return View();
         }
 
         public ActionResult Show(int id)
         {
-            Group group = db.Groups.Include("Posts").Include("Comments")
+            Group group = db.Groups.Include("Posts").Include("Posts.Comments")
                               .Where(gr => gr.Id == id)
                               .First();
             return View(group);
@@ -69,8 +69,8 @@ namespace Cod.Controllers
 
             try
             {
-                group.GroupName = groupToEdit.GroupName;
-                group.GroupDescription = groupToEdit.GroupDescription;
+                group.Name = groupToEdit.Name;
+                group.Description = groupToEdit.Description;
                 group.CreationDate = groupToEdit.CreationDate;
                 db.SaveChanges();
                 TempData["message"] = "Group modified!";

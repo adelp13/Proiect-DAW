@@ -21,7 +21,7 @@
 @foreach (Cod.Models.Group group in ViewBag.Groups)
 {
     @Html.Label("GroupName", "Name of the group")
-    <p>@group.GroupName</p>
+    <p>@group.Name</p>
     <a class="btn alert-success" href="/Groups/Show/@group.Id"> Show group </a>
     <a class="btn alert-success" href="/Groups/Edit/@group.Id"> Edit group </a>
     <br />
