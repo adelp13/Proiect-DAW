@@ -7,7 +7,7 @@ namespace Cod.Models
     {
         [Key]
         public int Id { get; set; }
-        [Required(ErrorMessage = "Name required!")]
+        [Required(ErrorMessage = "Group Name required")]
         public string Name { get; set; }
         public string Description { get; set; }
         public DateTime CreationDate { get; set; }

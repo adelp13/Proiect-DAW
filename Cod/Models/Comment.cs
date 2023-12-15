@@ -8,9 +8,9 @@ namespace Cod.Models
     {
         [Key]
         public int Id { get; set; }
-        [Required(ErrorMessage = "Name required!")]
         public string ProfileId { get; set; }
         public ApplicationUser Profile { get; set; }
+        [Required(ErrorMessage = "Comment Content Required")]
         public string CommentContent { get; set; }
         public DateTime CommentDate { get; set; }
     }

@@ -7,7 +7,7 @@ namespace Cod.Models
         [Key]
         public int Id { get; set; }
         public DateTime CreationDate { get; set; }
-        [Required(ErrorMessage = "Message content required!")]
+        [Required(ErrorMessage = "Post content required!")]
         public string Content { get; set; }
         public string ProfileId { get; set; }
         public ApplicationUser Profile { get; set; }
