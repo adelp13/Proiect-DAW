@@ -1,0 +1,23 @@
+﻿@model Cod.Models.Post
+<h2 class="text-center mt-5">Editeaza comentariu</h2>
+<br />
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-6 offset-3">
+            @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+
+            @using (Html.BeginForm(actionName: "Edit", controllerName: "Comments"))
+            {
+                @Html.Label("Content", "Continut comentariu")
+                <br />
+                @Html.Editor("Content", null, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Content, null, new { @class = "text-danger" })
+                <br />
+                <br />
+
+                <button class="btn btn-success" type="submit">Editeaza comentariu</button>
+            }
+        </div>
+    </div>
+</div>

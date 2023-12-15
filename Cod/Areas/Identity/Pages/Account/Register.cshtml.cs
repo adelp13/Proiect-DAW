@@ -127,9 +127,16 @@ namespace Cod.Areas.Identity.Pages.Account
         {
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
+
+                user.FirstName = Input.FirstName;
+                user.LastName = Input.LastName;
+                user.isPrivate = false;
+                user.EmailConfirmed = true;
+                await _userStore.UpdateAsync(user, CancellationToken.None);
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
@@ -140,13 +147,7 @@ namespace Cod.Areas.Identity.Pages.Account
                     _logger.LogInformation("User created a new account with password.");
 
                     var userId = await _userManager.GetUserIdAsync(user);
-                    user.FirstName = Input.FirstName;
-                    user.LastName = Input.LastName;
-                    user.isPrivate = false;
-                    user.EmailConfirmed = true;
-
-                    await _userStore.UpdateAsync(user, CancellationToken.None);
-
+                    
                     return RedirectToAction("Index");
                     
                 }

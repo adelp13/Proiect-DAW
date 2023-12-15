@@ -12,10 +12,11 @@ namespace Cod.Models
         // TODO: create self M-M tables
         //public virtual ICollection<Profile> Follows { get; set; }
         //public virtual ICollection<Profile> Follow_Requests { get; set; }
-        public virtual ICollection<Comment> Comments { get; set; }
+        public virtual ICollection<Comment>? Comments { get; set; }
+        public virtual ICollection<Post>? Posts { get; set; }
         [Required(ErrorMessage = "First Name Required")]
-        public string? FirstName { get; set; }
+        public string FirstName { get; set; }
         [Required(ErrorMessage = "Last Name Required")]
-        public string? LastName { get; set; }
+        public string LastName { get; set; }
     }
 }
