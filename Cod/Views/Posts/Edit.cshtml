@@ -16,6 +16,15 @@
                 <br />
                 <br />
 
+                <label>Selectati grupul in care sa se faca postarea</label>
+                @Html.DropDownListFor(m => m.GroupId,
+                         new SelectList(Model.Groups, "Value", "Text"),
+                         "Selectati grupul", new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.GroupId, "The group in which to write post is required", new { @class = "text-danger" })
+                <br />
+
+                <br />
+
                 <button class="btn btn-success" type="submit">Editeaza postare</button>
             }
         </div>

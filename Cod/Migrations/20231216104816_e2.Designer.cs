@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Cod.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231215183826_migrati")]
-    partial class migrati
+    [Migration("20231216104816_e2")]
+    partial class e2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -59,9 +59,11 @@ namespace Cod.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("FirstName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
@@ -121,18 +123,23 @@ namespace Cod.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("CommentContent")
+                    b.Property<string>("Content")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("CommentDate")
+                    b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<int?>("PostId")
+                        .HasColumnType("int");
 
                     b.Property<string>("ProfileId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("PostId");
 
                     b.HasIndex("ProfileId");
 
@@ -150,11 +157,10 @@ namespace Cod.Migrations
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("GroupDescription")
-                        .IsRequired()
+                    b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("GroupName")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -178,11 +184,10 @@ namespace Cod.Migrations
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("GroupId")
+                    b.Property<int?>("GroupId")
                         .HasColumnType("int");
 
                     b.Property<string>("ProfileId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
@@ -348,6 +353,10 @@ namespace Cod.Migrations
 
             modelBuilder.Entity("Cod.Models.Comment", b =>
                 {
+                    b.HasOne("Cod.Models.Post", null)
+                        .WithMany("Comments")
+                        .HasForeignKey("PostId");
+
                     b.HasOne("Cod.Models.ApplicationUser", "Profile")
                         .WithMany("Comments")
                         .HasForeignKey("ProfileId")
@@ -361,15 +370,11 @@ namespace Cod.Migrations
                 {
                     b.HasOne("Cod.Models.Group", "Group")
                         .WithMany("Posts")
-                        .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("GroupId");
 
                     b.HasOne("Cod.Models.ApplicationUser", "Profile")
-                        .WithMany()
-                        .HasForeignKey("ProfileId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany("Posts")
+                        .HasForeignKey("ProfileId");
 
                     b.Navigation("Group");
 
@@ -430,11 +435,18 @@ namespace Cod.Migrations
             modelBuilder.Entity("Cod.Models.ApplicationUser", b =>
                 {
                     b.Navigation("Comments");
+
+                    b.Navigation("Posts");
                 });
 
             modelBuilder.Entity("Cod.Models.Group", b =>
                 {
                     b.Navigation("Posts");
+                });
+
+            modelBuilder.Entity("Cod.Models.Post", b =>
+                {
+                    b.Navigation("Comments");
                 });
 #pragma warning restore 612, 618
         }

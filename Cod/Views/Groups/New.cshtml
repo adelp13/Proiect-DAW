@@ -6,25 +6,27 @@
 
 <h2> @ViewBag.Title </h2>
 
+@Html.ValidationSummary(false, "", new {@class = "text-danger"})
 @using (Html.BeginForm(actionName: "New", controllerName: "Groups", method: FormMethod.Post))
 {
 
-    @Html.Label("GroupName", "Name of group")
+    @Html.Label("Name", "Name of group")
     <br />
 
-    @Html.TextBox("GroupName", null, new { @class = "form-control" })
+    @Html.TextBox("Name", null, new { @class = "form-control" })
 
     @Html.ValidationMessageFor(m => m.Name, null, new { @class = "text-danger" })
+    <br/>
 
-    @Html.Label("DescriptionGroup", "Description of group")
+    @Html.Label("Description", "Description of group")
     <br />
 
-    @Html.TextBox("DescriptionName", null, new { @class = "form-control" })
+    @Html.TextBox("Description", null, new { @class = "form-control" })
 
     <br />
     <br />
 
-    <button class="btn btn-success" type="submit">Adauga categorie</button>
+    <button class="btn btn-success" type="submit">Adauga grup</button>
 
 }
 

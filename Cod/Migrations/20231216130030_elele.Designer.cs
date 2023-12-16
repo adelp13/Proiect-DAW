@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Cod.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231215181324_init")]
-    partial class init
+    [Migration("20231216130030_elele")]
+    partial class elele
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -134,7 +134,6 @@ namespace Cod.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("ProfileId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
@@ -158,7 +157,6 @@ namespace Cod.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
@@ -185,7 +183,7 @@ namespace Cod.Migrations
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("GroupId")
+                    b.Property<int>("GroupId")
                         .HasColumnType("int");
 
                     b.Property<string>("ProfileId")
@@ -360,9 +358,7 @@ namespace Cod.Migrations
 
                     b.HasOne("Cod.Models.ApplicationUser", "Profile")
                         .WithMany("Comments")
-                        .HasForeignKey("ProfileId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ProfileId");
 
                     b.Navigation("Profile");
                 });
@@ -371,7 +367,9 @@ namespace Cod.Migrations
                 {
                     b.HasOne("Cod.Models.Group", "Group")
                         .WithMany("Posts")
-                        .HasForeignKey("GroupId");
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Cod.Models.ApplicationUser", "Profile")
                         .WithMany("Posts")

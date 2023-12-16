@@ -8,7 +8,7 @@ namespace Cod.Models
     {
         [Key]
         public int Id { get; set; }
-        public string ProfileId { get; set; }
+        public string? ProfileId { get; set; }
         public virtual ApplicationUser? Profile { get; set; }
         [Required(ErrorMessage = "Comment Content Required")]
         public string Content { get; set; }

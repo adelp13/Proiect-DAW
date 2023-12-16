@@ -2,6 +2,8 @@
 using Cod.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Build.ObjectModelRemoting;
 using Microsoft.EntityFrameworkCore;
 
 namespace Cod.Controllers
@@ -19,7 +21,7 @@ namespace Cod.Controllers
 
         public IActionResult Index()
         {
-            var posts = db.Posts.Include("Profile").Include("Comments").Include("Comments.Profile").OrderBy(x => x.CreationDate);
+            var posts = db.Posts.Include("Profile").Include("Comments").Include("Group").Include("Comments.Profile").OrderBy(x => x.CreationDate);
             ViewBag.Posts = posts;
 
             return View();
@@ -28,7 +30,7 @@ namespace Cod.Controllers
         [HttpGet]
         public IActionResult Show(int id)
         {
-            Post post = db.Posts.Include("Profile").Include("Comments").Include("Comments.Profile").Where(x => x.Id == id).First();
+            Post post = db.Posts.Include("Profile").Include("Comments").Include("Group").Include("Comments.Profile").Where(x => x.Id == id).First();
             return View(post);
         }
 
@@ -40,25 +42,35 @@ namespace Cod.Controllers
             return View(post);
         }
 
+        // TODO inca pot posta ca user neintregistrat
+
         [HttpGet]
         public IActionResult New(int id)
         {
             Post post = new Post();
+            post.Groups = GetAllGroups();
             return View(post);
         }
 
         [HttpPost]
         public IActionResult New(Post post)
         {
-            // TODO validate ModelState.IsValid
-            // brute force values
             post.ProfileId = um.GetUserId(User);
             post.CreationDate = DateTime.Now;
+
+            if (ModelState.IsValid)
+            {
+                db.Posts.Add(post);
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            } else
+            {
+                post.Groups = GetAllGroups();
+                return View(post);
+            }
+            // TODO validate ModelState.IsValid
+            // brute force values
             // TODO hardcodat
-            post.GroupId = 1;
-            db.Posts.Add(post);
-            db.SaveChanges();
-            return RedirectToAction("Index");
         }
 
         // TODO check if user that made the post is the user trying to modify the post
@@ -66,18 +78,28 @@ namespace Cod.Controllers
         [HttpGet]
         public IActionResult Edit(int id)
         {
-            Post post = db.Posts.Include("Profile").Where(x => x.Id == id).First();
-
+            Post post = db.Posts.Include("Profile").Include("Group").Where(x => x.Id == id).First();
+            post.Groups = GetAllGroups();
             return View(post);
         }
+
+        // TODO when I press edit post, I still get a warning message
 
         [HttpPost]
         public IActionResult Edit(int id, Post reqPost)
         {
             Post post = db.Posts.Find(id);
-            post.Content = reqPost.Content;
-            db.SaveChanges();
-            return RedirectToAction("Index");
+            if (ModelState.IsValid)
+            {
+                post.Content = reqPost.Content;
+                post.GroupId = reqPost.GroupId;
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            } else
+            {
+                post.Groups = GetAllGroups();
+                return View(post);
+            }
         }
 
         [HttpPost]
@@ -87,6 +109,23 @@ namespace Cod.Controllers
             db.Posts.Remove(post);
             db.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+        [NonAction]
+        public IEnumerable<SelectListItem> GetAllGroups()
+        {
+            var selectList = new List<SelectListItem>();
+            var groups = from gr in db.Groups select gr;
+
+            foreach (var group in groups)
+            {
+                selectList.Add(new SelectListItem
+                {
+                    Value = group.Id.ToString(),
+                    Text = group.Name
+                });
+            }
+            return selectList;
         }
     }
 }

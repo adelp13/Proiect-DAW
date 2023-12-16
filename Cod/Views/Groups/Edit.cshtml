@@ -10,16 +10,16 @@
 @using (Html.BeginForm(controllerName: "Groups", actionName: "Edit", method: FormMethod.Post,
       routeValues: new { id = Model.Id }))
 {
-    @Html.Label("GroupName", "Name of group")
+    @Html.Label("Name", "Name of group")
     <br />
-    @Html.Editor("GroupName")
+    @Html.Editor("Name")
 
     @Html.ValidationMessageFor(m => m.Name, null, new { @class = "text-danger" })
     <br />
     <br />
-    @Html.Label("DescriptionName", "Description of group")
+    @Html.Label("Description", "Description of group")
     <br />
-    @Html.Editor("DescriptionName")
+    @Html.Editor("Description")
 
     <button class="btn btn-success" type="submit"> Edit group </button>
 }

@@ -58,9 +58,17 @@ namespace Cod.Controllers
             comment.CreationDate = DateTime.Now;
             // TODO hardcodat
             comment.PostId = 2;
-            db.Comments.Add(comment);
             db.SaveChanges();
-            return RedirectToAction("Index");
+
+            if (ModelState.IsValid)
+            {
+                db.Comments.Add(comment);
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            } else
+            {
+                return View(comment);
+            }
         }
 
         // TODO check if user that made the post is the user trying to modify the post

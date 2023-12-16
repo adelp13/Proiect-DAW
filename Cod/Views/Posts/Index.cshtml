@@ -1,12 +1,29 @@
-﻿<h1>Salut lume!</h1>
+﻿<h1>Afisare postari</h1>
+
+<div class="align-items-center justify-content-center d-flex">
+    <a class="btn btn-success" href="/Posts/New">Adauga postare</a>
+</div>
+<br />
 
 @foreach (Cod.Models.Post post in ViewBag.Posts)
 {
     <div class="card">
         @Html.Partial("PostContent", post)
+        <div class="d-flex flex-row justify-content-between">
+            <a class="btn btn-success" href="/Posts/Edit/@post.Id">Editeaza postare</a>
+
+            <form method="post" action="/Posts/Delete/@post.Id">
+                <button class="btn btn-danger" type="submit">Sterge postare</button>
+            </form>
+        </div>
         @foreach (Comment comment in post.Comments)
         {
-            @Html.Partial("CommentContent", comment)
+            <div class="card m-2 p-2">
+                @Html.Partial("CommentContent", comment)
+                <div class="d-flex flex-row justify-content-between">
+                    <a class="btn btn-success" href="/Comments/Show/@comment.Id">Afiseaza comentariu</a>
+                </div>
+            </div>
         }
     </div>
     <br />

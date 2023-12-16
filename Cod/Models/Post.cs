@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Cod.Models
 {
@@ -12,9 +14,11 @@ namespace Cod.Models
         public string? ProfileId { get; set; }
         // TODO vreau sa stiu care user a creat grupul?
         public virtual ApplicationUser? Profile { get; set; }
-        public int? GroupId { get; set; }
+        [Required(ErrorMessage = "Group to which to write post is required")]
+        public int GroupId { get; set; }
         public virtual Group? Group { get; set; }
         public virtual ICollection<Comment>? Comments { get; set; }
-
+        [NotMapped]
+        public IEnumerable<SelectListItem>? Groups { get; set; }
     }
 }

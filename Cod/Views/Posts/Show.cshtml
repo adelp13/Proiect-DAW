@@ -1,12 +1,22 @@
 ﻿@model Cod.Models.Post
 
 <div class="card">
-    @Html.Partial("PostContent", Model) 
-</div>
+    @Html.Partial("PostContent", Model)
+    <div class="d-flex flex-row justify-content-between">
+        <a class="btn btn-success" href="/Posts/Edit/@Model.Id">Editeaza postare</a>
 
-<div class="card">
+        <form method="post" action="/Posts/Delete/@Model.Id">
+            <button class="btn btn-danger" type="submit">Sterge postare</button>
+        </form>
+    </div>
     @foreach (Comment comment in Model.Comments)
     {
-        @Html.Partial("CommentContent", comment)
+        <div class="card m-2 p-2">
+            @Html.Partial("CommentContent", comment)
+            <div class="d-flex flex-row justify-content-between">
+                <a class="btn btn-success" href="/Comments/Show/@comment.Id">Afiseaza comentariu</a>
+            </div>
+        </div>
     }
 </div>
+<br />

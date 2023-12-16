@@ -42,6 +42,8 @@ namespace Cod.Controllers
         [HttpPost]
         public ActionResult New(Group gr)
         {
+            gr.CreationDate = DateTime.Now;
+
             try
             {
                 db.Groups.Add(gr);
