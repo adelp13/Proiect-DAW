@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Cod.Migrations
 {
-    public partial class init : Migration
+    public partial class addfollow : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -58,7 +58,7 @@ namespace Cod.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -173,6 +173,60 @@ namespace Cod.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "FollowRequests",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RequestingProfileId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    RequestedProfileId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FollowRequests", x => new { x.Id, x.RequestingProfileId, x.RequestedProfileId });
+                    
+                    table.ForeignKey(
+                        name: "FK_FollowRequests_AspNetUsers_RequestedProfileId",
+                        column: x => x.RequestedProfileId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
+                    table.ForeignKey(
+                        name: "FK_FollowRequests_AspNetUsers_RequestingProfileId",
+                        column: x => x.RequestingProfileId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Follows",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FollowingProfileId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    FollowedProfileId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    //ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Follows", x => new { x.Id, x.FollowingProfileId, x.FollowedProfileId });
+                    table.ForeignKey(
+                        name: "FK_Follows_AspNetUsers_FollowedProfileId",
+                        column: x => x.FollowedProfileId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
+                    table.ForeignKey(
+                        name: "FK_Follows_AspNetUsers_FollowingProfileId",
+                        column: x => x.FollowingProfileId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ApplicationUserGroup",
                 columns: table => new
                 {
@@ -205,7 +259,7 @@ namespace Cod.Migrations
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProfileId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    GroupId = table.Column<int>(type: "int", nullable: true)
+                    GroupId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -219,7 +273,8 @@ namespace Cod.Migrations
                         name: "FK_Posts_Groups_GroupId",
                         column: x => x.GroupId,
                         principalTable: "Groups",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -228,7 +283,7 @@ namespace Cod.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ProfileId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProfileId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     PostId = table.Column<int>(type: "int", nullable: true)
@@ -240,8 +295,7 @@ namespace Cod.Migrations
                         name: "FK_Comments_AspNetUsers_ProfileId",
                         column: x => x.ProfileId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Comments_Posts_PostId",
                         column: x => x.PostId,
@@ -304,6 +358,26 @@ namespace Cod.Migrations
                 column: "ProfileId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_FollowRequests_RequestedProfileId",
+                table: "FollowRequests",
+                column: "RequestedProfileId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FollowRequests_RequestingProfileId",
+                table: "FollowRequests",
+                column: "RequestingProfileId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Follows_FollowedProfileId",
+                table: "Follows",
+                column: "FollowedProfileId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Follows_FollowingProfileId",
+                table: "Follows",
+                column: "FollowingProfileId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Posts_GroupId",
                 table: "Posts",
                 column: "GroupId");
@@ -336,6 +410,12 @@ namespace Cod.Migrations
 
             migrationBuilder.DropTable(
                 name: "Comments");
+
+            migrationBuilder.DropTable(
+                name: "FollowRequests");
+
+            migrationBuilder.DropTable(
+                name: "Follows");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
