@@ -196,6 +196,62 @@ namespace Cod.Migrations
                     b.ToTable("Posts");
                 });
 
+            modelBuilder.Entity("Cod.Models.ProfileFollowsProfile", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("FollowingProfileId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("FollowedProfileId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id", "FollowingProfileId", "FollowedProfileId");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("FollowedProfileId");
+
+                    b.HasIndex("FollowingProfileId");
+
+                    b.ToTable("Follows");
+                });
+
+            modelBuilder.Entity("Cod.Models.ProfileRequestsProfile", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("RequestingProfileId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("RequestedProfileId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id", "RequestingProfileId", "RequestedProfileId");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("RequestedProfileId");
+
+                    b.HasIndex("RequestingProfileId");
+
+                    b.ToTable("FollowRequests");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -378,6 +434,52 @@ namespace Cod.Migrations
                     b.Navigation("Profile");
                 });
 
+            modelBuilder.Entity("Cod.Models.ProfileFollowsProfile", b =>
+                {
+                    b.HasOne("Cod.Models.ApplicationUser", null)
+                        .WithMany("Follows")
+                        .HasForeignKey("ApplicationUserId");
+
+                    b.HasOne("Cod.Models.ApplicationUser", "FollowedProfile")
+                        .WithMany()
+                        .HasForeignKey("FollowedProfileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Cod.Models.ApplicationUser", "FollowingProfile")
+                        .WithMany()
+                        .HasForeignKey("FollowingProfileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("FollowedProfile");
+
+                    b.Navigation("FollowingProfile");
+                });
+
+            modelBuilder.Entity("Cod.Models.ProfileRequestsProfile", b =>
+                {
+                    b.HasOne("Cod.Models.ApplicationUser", null)
+                        .WithMany("Requests")
+                        .HasForeignKey("ApplicationUserId");
+
+                    b.HasOne("Cod.Models.ApplicationUser", "RequestedProfile")
+                        .WithMany()
+                        .HasForeignKey("RequestedProfileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Cod.Models.ApplicationUser", "RequestingProfile")
+                        .WithMany()
+                        .HasForeignKey("RequestingProfileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("RequestedProfile");
+
+                    b.Navigation("RequestingProfile");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -433,7 +535,11 @@ namespace Cod.Migrations
                 {
                     b.Navigation("Comments");
 
+                    b.Navigation("Follows");
+
                     b.Navigation("Posts");
+
+                    b.Navigation("Requests");
                 });
 
             modelBuilder.Entity("Cod.Models.Group", b =>
