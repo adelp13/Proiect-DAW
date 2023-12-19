@@ -8,13 +8,15 @@ namespace Cod.Controllers
 {
     public class CommentsController : Controller
     {
+        // manager de useri si roluri
         private readonly ApplicationDbContext db;
         private readonly UserManager<ApplicationUser> um;
-
-        public CommentsController(ApplicationDbContext _db, UserManager<ApplicationUser> _um)
+        private readonly RoleManager<IdentityRole> rm;
+        public CommentsController(ApplicationDbContext _db, UserManager<ApplicationUser> _um, RoleManager<IdentityRole> _rm)
         {
             db = _db;
             um = _um;
+            rm = _rm;
         }
 
         // TODO debug method
