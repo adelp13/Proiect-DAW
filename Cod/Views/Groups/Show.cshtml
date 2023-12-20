@@ -17,7 +17,16 @@
 </form>
 
 <br />
-<a class="btn alert-success" href="/Groups/Index/"> Show all groups </a>
+
+@foreach (Post post in Model.Posts)
+{
+            <div class="d-flex flex-row justify-content-between">
+                <a class="btn btn-success" href="/Posts/Show/@post.Id">Afiseaza postare</a>
+            </div>
+}
+
+<a class="btn alert-success" href="/Posts/New"> Add post </a> <br />
+<a class="btn alert-success" href="/Groups/Index"> Show all groups </a>
 
 <br />
 <hr />
