@@ -1,6 +1,9 @@
 ﻿using Cod.Data;
 using Cod.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Cod.Controllers
 {
@@ -8,37 +11,47 @@ namespace Cod.Controllers
     {
 
         private readonly ApplicationDbContext db;
+        private readonly UserManager<ApplicationUser> um;
 
         public ApplicationUsersController(ApplicationDbContext _db)
         {
             db = _db;
         }
 
-        public IActionResult Index()
-        {
-            return View();
-        }
-
         [HttpGet]
-        public IActionResult New()
+        [Authorize(Roles = "User,Admin")]
+        public IActionResult Show(string id)
         {
-            ApplicationUser user = new ApplicationUser();
-            return View(user);
-        }
-
-        [HttpPost]
-        public IActionResult New(ApplicationUser user)
-        {
-            if (ModelState.IsValid)
+            ApplicationUser user = db.Users.Include("Follows").Where(us => us.Id == id).First();
+            ApplicationUser reqUser = db.Users.Include("Follows").Where(us => us.Id == um.GetUserId(User)).First();
+            // if the user we are looking for has a private profile we have 2 cases:
+            // the user sending the request is not in the follow list, then we must ask for a follo request
+            // otherwise, we can see their profile
+            if (user.isPrivate == true)
             {
-                db.Add(user);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                bool bHasAccess = false;
+                foreach (Cod.Models.ApplicationUser otherUser in reqUser.Follows)
+                {
+                    if (otherUser.Id == user.Id)
+                    {
+                        bHasAccess = true;
+                        break;
+                    }
+                }
+                if (bHasAccess)
+                {
+                    return View();
+                }
+                else
+                {
+                    return RedirectToAction("Index");
+                }
             }
-            else
+            else // the user is public, so we can see their profile
             {
-                return View(user);
+                return View();
             }
+            return View();
         }
     }
 }
