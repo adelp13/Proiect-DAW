@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Cod.Migrations
 {
-    public partial class init : Migration
+    public partial class init1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -24,31 +24,31 @@ namespace Cod.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "FollowRequests",
+                name: "AspNetUsers",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    RequestingProfileId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    RequestedProfileId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    isPrivate = table.Column<bool>(type: "bit", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
+                    LockoutEnabled = table.Column<bool>(type: "bit", nullable: false),
+                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_FollowRequests", x => new { x.Id, x.RequestingProfileId, x.RequestedProfileId });
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Follows",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    FollowingProfileId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    FollowedProfileId = table.Column<string>(type: "nvarchar(450)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Follows", x => new { x.Id, x.FollowingProfileId, x.FollowedProfileId });
+                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -83,74 +83,6 @@ namespace Cod.Migrations
                         name: "FK_AspNetRoleClaims_AspNetRoles_RoleId",
                         column: x => x.RoleId,
                         principalTable: "AspNetRoles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AspNetUsers",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    isPrivate = table.Column<bool>(type: "bit", nullable: false),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    FollowsId = table.Column<int>(type: "int", nullable: true),
-                    FollowsFollowingProfileId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    FollowsFollowedProfileId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    RequestsId = table.Column<int>(type: "int", nullable: true),
-                    RequestsRequestingProfileId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    RequestsRequestedProfileId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
-                    LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
-                    LockoutEnabled = table.Column<bool>(type: "bit", nullable: false),
-                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AspNetUsers_FollowRequests_RequestsId_RequestsRequestingProfileId_RequestsRequestedProfileId",
-                        columns: x => new { x.RequestsId, x.RequestsRequestingProfileId, x.RequestsRequestedProfileId },
-                        principalTable: "FollowRequests",
-                        principalColumns: new[] { "Id", "RequestingProfileId", "RequestedProfileId" });
-                    table.ForeignKey(
-                        name: "FK_AspNetUsers_Follows_FollowsId_FollowsFollowingProfileId_FollowsFollowedProfileId",
-                        columns: x => new { x.FollowsId, x.FollowsFollowingProfileId, x.FollowsFollowedProfileId },
-                        principalTable: "Follows",
-                        principalColumns: new[] { "Id", "FollowingProfileId", "FollowedProfileId" });
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ApplicationUserGroup",
-                columns: table => new
-                {
-                    GroupsId = table.Column<int>(type: "int", nullable: false),
-                    ProfilesId = table.Column<string>(type: "nvarchar(450)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ApplicationUserGroup", x => new { x.GroupsId, x.ProfilesId });
-                    table.ForeignKey(
-                        name: "FK_ApplicationUserGroup_AspNetUsers_ProfilesId",
-                        column: x => x.ProfilesId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ApplicationUserGroup_Groups_GroupsId",
-                        column: x => x.GroupsId,
-                        principalTable: "Groups",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -236,6 +168,80 @@ namespace Cod.Migrations
                         name: "FK_AspNetUserTokens_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "FollowRequests",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RequestingProfileId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    RequestedProfileId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FollowRequests", x => new { x.Id, x.RequestingProfileId, x.RequestedProfileId });
+                    table.ForeignKey(
+                        name: "FK_FollowRequests_AspNetUsers_RequestedProfileId",
+                        column: x => x.RequestedProfileId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_FollowRequests_AspNetUsers_RequestingProfileId",
+                        column: x => x.RequestingProfileId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Follows",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FollowingProfileId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    FollowedProfileId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Follows", x => new { x.Id, x.FollowingProfileId, x.FollowedProfileId });
+                    table.ForeignKey(
+                        name: "FK_Follows_AspNetUsers_FollowedProfileId",
+                        column: x => x.FollowedProfileId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Follows_AspNetUsers_FollowingProfileId",
+                        column: x => x.FollowingProfileId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ApplicationUserGroup",
+                columns: table => new
+                {
+                    GroupsId = table.Column<int>(type: "int", nullable: false),
+                    ProfilesId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ApplicationUserGroup", x => new { x.GroupsId, x.ProfilesId });
+                    table.ForeignKey(
+                        name: "FK_ApplicationUserGroup_AspNetUsers_ProfilesId",
+                        column: x => x.ProfilesId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ApplicationUserGroup_Groups_GroupsId",
+                        column: x => x.GroupsId,
+                        principalTable: "Groups",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -331,16 +337,6 @@ namespace Cod.Migrations
                 column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AspNetUsers_FollowsId_FollowsFollowingProfileId_FollowsFollowedProfileId",
-                table: "AspNetUsers",
-                columns: new[] { "FollowsId", "FollowsFollowingProfileId", "FollowsFollowedProfileId" });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AspNetUsers_RequestsId_RequestsRequestingProfileId_RequestsRequestedProfileId",
-                table: "AspNetUsers",
-                columns: new[] { "RequestsId", "RequestsRequestingProfileId", "RequestsRequestedProfileId" });
-
-            migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
@@ -356,6 +352,26 @@ namespace Cod.Migrations
                 name: "IX_Comments_ProfileId",
                 table: "Comments",
                 column: "ProfileId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FollowRequests_RequestedProfileId",
+                table: "FollowRequests",
+                column: "RequestedProfileId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FollowRequests_RequestingProfileId",
+                table: "FollowRequests",
+                column: "RequestingProfileId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Follows_FollowedProfileId",
+                table: "Follows",
+                column: "FollowedProfileId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Follows_FollowingProfileId",
+                table: "Follows",
+                column: "FollowingProfileId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Posts_GroupId",
@@ -392,6 +408,12 @@ namespace Cod.Migrations
                 name: "Comments");
 
             migrationBuilder.DropTable(
+                name: "FollowRequests");
+
+            migrationBuilder.DropTable(
+                name: "Follows");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
@@ -402,12 +424,6 @@ namespace Cod.Migrations
 
             migrationBuilder.DropTable(
                 name: "Groups");
-
-            migrationBuilder.DropTable(
-                name: "FollowRequests");
-
-            migrationBuilder.DropTable(
-                name: "Follows");
         }
     }
 }

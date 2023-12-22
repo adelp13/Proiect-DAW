@@ -17,7 +17,7 @@ namespace Cod.Models
         public virtual ICollection<Comment>? Comments { get; set; }
         public virtual ICollection<Post>? Posts { get; set; }
 
-        public virtual ProfileFollowsProfile Follows { get; set; }
-        public virtual ProfileRequestsProfile Requests { get; set; }
+        public virtual ICollection<ProfileFollowsProfile>? Follows { get; set; }
+        public virtual ICollection<ProfileRequestsProfile>? Requests { get; set; }
     }
 }

@@ -1,0 +1,10 @@
+﻿<!--vreau sa am un div care sa imi dea nume, prenume si o bifa daca sunt admin-->
+
+<div class="card-body">
+    <div class="d-flex justify-content-between flex-row mt-5">
+        <div>
+            <i class="bi bi-person"></i> @Model.FirstName @Model.LastName 
+            @* @if (Model.isInRole("Admin")) {<i class="bi bi-check-lg"></i>} *@
+        </div>
+    </div>
+</div>

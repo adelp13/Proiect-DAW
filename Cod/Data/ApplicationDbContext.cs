@@ -26,32 +26,24 @@ namespace Cod.Data
 
             // definire primary key compus
             modelbuilder.Entity<ProfileFollowsProfile>()
-                .HasKey(ab => new { ab.FollowingProfileId, ab.FollowedProfileId });
+                .HasKey(ab => new { ab.Id, ab.FollowingProfileId, ab.FollowedProfileId });
 
             modelbuilder.Entity<ProfileRequestsProfile>()
-                .HasKey(ab => new { ab.RequestingProfileId, ab.RequestedProfileId });
+                .HasKey(ab => new { ab.Id, ab.RequestingProfileId, ab.RequestedProfileId });
 
             // de asemenea stergem spre final increment-urile
 
             modelbuilder.Entity<ProfileFollowsProfile>()
-                .HasOne(ab => ab.FollowingProfileId)
-                .WithMany()
-                .HasForeignKey(ab => ab.Id);
-
-            modelbuilder.Entity<ProfileRequestsProfile>()
-                .HasOne(ab => ab.RequestedProfileId)
-                .WithMany()
-                .HasForeignKey(ab => ab.Id);
-
-            modelbuilder.Entity<ProfileFollowsProfile>()
-               .HasOne(ab => ab.FollowedProfile)
-               .WithMany()
-               .HasForeignKey(ab => ab.FollowedProfileId);
+                .HasOne(ab => ab.FollowedProfile)
+                .WithMany(ab => ab.Follows)
+                .HasForeignKey(ab => ab.FollowedProfileId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelbuilder.Entity<ProfileRequestsProfile>()
                 .HasOne(ab => ab.RequestedProfile)
-                .WithMany()
-                .HasForeignKey(ab => ab.RequestedProfileId);
+                .WithMany(ab => ab.Requests)
+                .HasForeignKey(ab => ab.RequestedProfileId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }
