@@ -41,7 +41,6 @@ namespace Cod.Controllers
         [HttpPost]
         public IActionResult New([FromForm] Comment comment)
         {
-            // TODO validate ModelState.IsValid
             comment.ProfileId = um.GetUserId(User);
             comment.CreationDate = DateTime.Now;
 
@@ -49,14 +48,14 @@ namespace Cod.Controllers
             {
                 db.Comments.Add(comment);
                 db.SaveChanges();
+                TempData["message"] = "Comentariul a fost adaugat cu succes!";
+                TempData["messageType"] = "alert-success";
                 return RedirectToAction("Index", "Posts");
             } else
             {
                 return View(comment);
             }
         }
-
-        // TODO check if user that made the post is the user trying to modify the post
 
         [HttpGet]
         [Authorize(Roles = "User,Admin")]
@@ -73,7 +72,7 @@ namespace Cod.Controllers
                 TempData["message"] = "Nu puteti modifica acest comentariu!";
                 TempData["messageType"] = "alert-danger";
                 // TODO where redirect?
-                return RedirectToAction("/Posts/Show/" + comment.PostId);
+                return RedirectToAction("Index", "Posts");
             }
         }
 
@@ -90,7 +89,7 @@ namespace Cod.Controllers
 
                     comment.Content = reqComment.Content;
                     db.SaveChanges();
-                    TempData["message"] = "Comentariul a fost modificat!";
+                    TempData["message"] = "Comentariul a fost modificat cu succes!";
                     TempData["messageType"] = "alert-success";
                     return RedirectToAction("Index", "Posts");
                 }
@@ -116,7 +115,7 @@ namespace Cod.Controllers
             {
                 db.Comments.Remove(comment);
                 db.SaveChanges();
-                TempData["message"] = "Comentariul a fost sters!";
+                TempData["message"] = "Comentariul a fost sters cu succes!";
                 TempData["messageType"] = "alert-success";
                 return RedirectToAction("Index", "Posts");
             } else

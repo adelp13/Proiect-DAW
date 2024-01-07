@@ -1,3 +1,11 @@
 ﻿@model Cod.Models.ApplicationUser
 
+@{
+    ViewBag.Title = "Afiseaza utilizator";
+}
+
+<h1 class="text-center"> @ViewBag.Title </h1>
+<hr />
+<br />
+
 @Html.Partial("ProfileDetails", Model)

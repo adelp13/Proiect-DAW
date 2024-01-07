@@ -1,5 +1,6 @@
 ﻿using Cod.Data;
 using Cod.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -25,84 +26,130 @@ namespace Cod.Controllers
                 ViewBag.messageType = TempData["messageType"].ToString();
             }
 
-            var groups = db.Groups.Include("Posts").Include("Posts.Comments");
+            var groups = db.Groups.Include("Posts").Include("Posts.Profile");
             ViewBag.Groups = groups;
             return View();
         }
 
         public ActionResult Show(int id)
         {
-            Group group = db.Groups.Include("Posts").Include("Posts.Comments").Include("Posts.Profile")
+            Group group = db.Groups.Include("Posts").Include("Posts.Profile")
                               .Where(gr => gr.Id == id)
                               .First();
             return View(group);
         }
 
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
         public ActionResult New()
         {
-            return View();
+            if (User.IsInRole("Admin"))
+            {
+                return View();
+            } else
+            {
+                TempData["message"] = "Nu aveti dreptul sa adaugati grupuri!";
+                TempData["messageType"] = "alert-danger";
+                return RedirectToAction("Index");
+            }
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public ActionResult New(Group gr)
         {
             gr.CreationDate = DateTime.Now;
 
-            try
+            if(ModelState.IsValid)
             {
-                db.Groups.Add(gr);
-                db.SaveChanges();
-                TempData["message"] = "Grupul a fost adaugat cu succes!";
-                TempData["messageType"] = "alert-success";
-                return RedirectToAction("Index");
+                if (User.IsInRole("Admin"))
+                {
+                    db.Groups.Add(gr);
+                    db.SaveChanges();
+                    TempData["message"] = "Grupul a fost adaugat cu succes!";
+                    TempData["messageType"] = "alert-success";
+                    return RedirectToAction("Index");
+                } else
+                {
+                    TempData["message"] = "Nu aveti dreptul sa adaugati grupuri!";
+                    TempData["messageType"] = "alert-danger";
+                    return RedirectToAction("Index");
+                }
             }
-
-            catch (Exception e)
+            else
             {
                 return View(gr);
             }
         }
 
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
         public ActionResult Edit(int id)
         {
             Group group = db.Groups.Find(id);
-            return View(group);
+            if (User.IsInRole("Admin")){
+                return View(group);
+            } else
+            {
+                TempData["message"] = "Nu puteti modifica acest grup!";
+                TempData["messageType"] = "alert-danger";
+                return RedirectToAction("Index", "Groups");
+            }
         }
 
         [HttpPost]
-        public ActionResult Edit(int id, Group groupToEdit)
+        [Authorize(Roles = "Admin")]
+        public ActionResult Edit(int id, [FromForm] Group groupToEdit)
         {
             Group group = db.Groups.Find(id);
 
-            try
+            if(ModelState.IsValid)
             {
-                group.Name = groupToEdit.Name;
-                group.Description = groupToEdit.Description;
-                group.CreationDate = groupToEdit.CreationDate;
-                db.SaveChanges();
-                TempData["message"] = "Grupul a fost modificat cu succes!";
-                TempData["messageType"] = "alert-success";
-                return RedirectToAction("Index");
+                if (User.IsInRole("Admin"))
+                {
+                    group.Name = groupToEdit.Name;
+                    group.Description = groupToEdit.Description;
+                    db.SaveChanges();
+                    TempData["message"] = "Grupul a fost modificat cu succes!";
+                    TempData["messageType"] = "alert-success";
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    TempData["message"] = "Nu puteti modifica acest grup!";
+                    TempData["messageType"] = "alert-danger";
+                    return RedirectToAction("Index", "Groups");
+                }
             }
-            catch (Exception e)
+            else
             {
                 return View(groupToEdit);
             }
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public ActionResult Delete(int id)
         {
-            Group group = db.Groups.Find(id);
-            db.Groups.Remove(group);
-            db.SaveChanges();
-            TempData["message"] = "Grupul a fost sters cu succes!";
-            TempData["messageType"] = "alert-success";
-            return RedirectToAction("Index");
+            if (User.IsInRole("Admin"))
+            {
+                Group group = db.Groups.Find(id);
+                db.Groups.Remove(group);
+                db.SaveChanges();
+                TempData["message"] = "Grupul a fost sters cu succes!";
+                TempData["messageType"] = "alert-success";
+                return RedirectToAction("Index");
+            } else
+            {
+                TempData["message"] = "Nu aveti dreptul sa stergeti grupul!";
+                TempData["messageType"] = "alert-danger";
+                return RedirectToAction("Index", "Groups");
+            }
         }
 
 
         [HttpPost]
+        [Authorize(Roles ="User,Admin")]
         public ActionResult GroupJoin(int id)
         {
             Group group = db.Groups.Find(id);
@@ -137,12 +184,5 @@ namespace Cod.Controllers
                 return RedirectToAction("Index");
             }
         }
-
-        private void SetAccessRights()
-        {
-            ViewBag.EsteAdmin = User.IsInRole("Admin");
-            ViewBag.UserCurent = um.GetUserId(User);
-        }
     }
 }
-

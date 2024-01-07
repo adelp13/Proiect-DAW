@@ -4,10 +4,10 @@
     ViewBag.Title = "Adauga grup";
 }
 
-<h2 class="text-center"> @ViewBag.Title </h2>
-<hr/>
+<h1 class="text-center"> @ViewBag.Title </h1>
+<hr />
+<br />
 
-<br/>
 @Html.ValidationSummary(false, "", new { @class = "text-danger" })
 @using (Html.BeginForm(actionName: "New", controllerName: "Groups", method: FormMethod.Post))
 {

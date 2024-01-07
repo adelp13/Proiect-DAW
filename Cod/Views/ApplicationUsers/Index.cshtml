@@ -1,4 +1,10 @@
-﻿<h1>Salut lume!</h1>
+﻿@{
+    ViewBag.Title = "Listeaza utilizatori";
+}
+
+<h1 class="text-center"> @ViewBag.Title </h1>
+<hr />
+<br />
 
 @foreach (ApplicationUser user in ViewBag.Users)
 {

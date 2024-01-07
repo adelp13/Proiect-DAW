@@ -15,7 +15,7 @@ namespace Cod.Models
         public string? ProfileId { get; set; }
         public virtual ApplicationUser? Profile { get; set; }
         [Required(ErrorMessage = "Grupul in care se face postarea trebuie selectat")]
-        public int GroupId { get; set; }
+        public int? GroupId { get; set; }
         public virtual Group? Group { get; set; }
         public virtual ICollection<Comment>? Comments { get; set; }
         [NotMapped]

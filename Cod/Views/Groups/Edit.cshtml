@@ -3,10 +3,10 @@
 @{
     ViewBag.Title = "Modifica grup";
 }
-<h2 class="text-center"> @ViewBag.Title </h2>
+<h1 class="text-center"> @ViewBag.Title </h1>
 <hr/>
-
 <br/>
+
 @Html.ValidationSummary(false, "", new { @class = "text-danger" })
 @using (Html.BeginForm(controllerName: "Groups", actionName: "Edit", method: FormMethod.Post, routeValues: new { id = Model.Id }))
 {

@@ -1,39 +1,47 @@
-﻿@{/* TODO copiaza jegu asta in mai multe locuri*/}
-@if (ViewBag.message != null)
+﻿@if (ViewBag.message != null)
 {
-    //Console.WriteLine(@ViewBag.messageType);
     <div class="alert @ViewBag.messageType p-3 rounded-3 text-center mb-5" role="alert"> @ViewBag.message </div>
 }
 
 @{
-    ViewBag.Title = "Lista Grupurilor";
+    ViewBag.Title = "Listeaza grupuri";
 }
-<h2 class="text-center">@ViewBag.Title</h2>
+<h1 class="text-center">@ViewBag.Title</h1>
 <hr/>
 <br />
 
-
-@{/* TODO NU E CENTRAT*/}
 @foreach (Cod.Models.Group group in ViewBag.Groups)
 {
     <div class="card">
-        <div class="text-center mb-2 mt-2">
-            <p> @group.Name</p>
-            <p> @group.Description</p>
-        </div>
+        @Html.Partial("GroupContent", group)
         <div class="d-flex justify-content-between flex-row m-2 mt-0">
-            <a class="btn alert-success" href="/Groups/Show/@group.Id"> Afiseaza grup </a>
-            <a class="btn alert-success" href="/Groups/Edit/@group.Id"> Modifica grup </a>
+            <a class="btn btn-success" href="/Groups/Show/@group.Id"> Afiseaza grup </a>
+            <a class="btn btn-success" href="/Groups/Edit/@group.Id"> Modifica grup </a>
             <form method="post" action="/Groups/GroupJoin/@group.Id">
-                <button class="btn alert-success" type="submit"> Alatura-te grupului </button>
+                <button class="btn btn-success" type="submit"> Alatura-te grupului </button>
+            </form>
+            <form method="post" action="/Groups/Delete/@group.Id">
+                <button class="btn btn-danger" type="submit">Sterge grup</button>
             </form>
         </div>
-        <br />
+        @foreach (Cod.Models.Post post in group.Posts)
+        {
+            <div class="card m-2 p-2">
+                @Html.Partial("PostContent", post)
+                <div class="d-flex flex-row justify-content-between">
+                    <a class="btn btn-success" href="/Posts/Edit/@post.Id">Modifica postare</a>
+                    <a class="btn btn-success" href="/Posts/Show/@post.Id">Afiseaza postare</a>
+                    <form method="post" action="/Posts/Delete/@post.Id">
+                        <button class="btn btn-danger" type="submit">Sterge postare</button>
+                    </form>
+                </div>
+            </div>
+        }
     </div>
     <br />
 }
 <br />
 <div class="align-items-center justify-content-around d-flex">
-    <a class="btn btn-success" href="/Groups/New">Creeaza grup</a>
+    <a class="btn btn-success" href="/Groups/New">Adauga grup</a>
 </div>
 <br />
