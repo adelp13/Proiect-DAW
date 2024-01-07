@@ -1,30 +1,39 @@
-﻿@{/* TODO modify this*/}
-@if (TempData.ContainsKey("message"))
+﻿@{/* TODO copiaza jegu asta in mai multe locuri*/}
+@if (ViewBag.message != null)
 {
-    <h1>@ViewBag.message</h1>
+    //Console.WriteLine(@ViewBag.messageType);
+    <div class="alert @ViewBag.messageType p-3 rounded-3 text-center mb-5" role="alert"> @ViewBag.message </div>
 }
 
 @{
     ViewBag.Title = "Lista Grupurilor";
 }
-<br />
-<h3 class="text-center">@ViewBag.Title</h3>
-<br />
+<h2 class="text-center">@ViewBag.Title</h2>
+<hr/>
 <br />
 
 
+@{/* TODO NU E CENTRAT*/}
 @foreach (Cod.Models.Group group in ViewBag.Groups)
 {
-    @Html.Label("GroupName", "Numele grupului")
-    <p>@group.Name</p>
-    <a class="btn alert-success" href="/Groups/Show/@group.Id"> Afiseaza grup </a>
-    <a class="btn alert-success" href="/Groups/Edit/@group.Id"> Modifica grup </a>
-    <br />
-    <hr />
+    <div class="card">
+        <div class="text-center mb-2 mt-2">
+            <p> @group.Name</p>
+            <p> @group.Description</p>
+        </div>
+        <div class="d-flex justify-content-between flex-row m-2 mt-0">
+            <a class="btn alert-success" href="/Groups/Show/@group.Id"> Afiseaza grup </a>
+            <a class="btn alert-success" href="/Groups/Edit/@group.Id"> Modifica grup </a>
+            <form method="post" action="/Groups/GroupJoin/@group.Id">
+                <button class="btn alert-success" type="submit"> Alatura-te grupului </button>
+            </form>
+        </div>
+        <br />
+    </div>
     <br />
 }
 <br />
-<div class="align-items-center justify-content-center d-flex">
+<div class="align-items-center justify-content-around d-flex">
     <a class="btn btn-success" href="/Groups/New">Creeaza grup</a>
 </div>
 <br />

@@ -2,7 +2,7 @@
 
 <div class="card">
     @Html.Partial("PostContent", Model)
-    <div class="d-flex flex-row justify-content-between">
+    <div class="d-flex flex-row justify-content-between p-2 pt-0">
         <a class="btn btn-success" href="/Posts/Edit/@Model.Id">Editeaza postare</a>
 
         <form method="post" action="/Posts/Delete/@Model.Id">

@@ -1,23 +1,27 @@
 ﻿@model Cod.Models.Comment
-<h2 class="text-center mt-5">Adaugare Comentariu</h2>
-<br />
 
-<div class="container mt-5">
-    <div class="row">
-        <div class="col-6 offset-3">
-            @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+@{
+    ViewBag.Title = "Adauga grup";
+}
 
-            @using (Html.BeginForm(actionName: "New", controllerName: "Comments"))
-            {
-                @Html.Label("Content", "Continut comentariu")
-                <br />
-                @Html.TextBox("Content", null, new { @class = "form-control" })
-                @Html.ValidationMessageFor(m => m.Content, null, new { @class = "text-danger" })
-                <br />
-                <br />
+<h2 class="text-center"> @ViewBag.Title </h2>
+<hr/>
 
-                <button class="btn btn-success" type="submit">Adauga comentariu</button>
-            }
+<br/>
+@Html.ValidationSummary(false, "", new { @class = "text-danger" })
+@using (Html.BeginForm(actionName: "New", controllerName: "Comments", method: FormMethod.Post))
+{
+    <div class="card p-2">
+        <div class="text-center">
+            @Html.Label("Content", "Continut comentariu")
         </div>
+
+        @Html.TextBox("Content", null, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Content, null, new { @class = "text-danger" })
     </div>
-</div>
+    <br/>
+
+    <div class="d-flex justify-content-center flex-row m-2 mt-0">
+        <button class="btn btn-success" type="submit">Adauga Comentariu</button>
+    </div>
+}

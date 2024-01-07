@@ -1,12 +1,17 @@
-﻿<div class="card-body">
-    <div class="d-flex justify-content-between flex-row mt-5">
-        <div>
+﻿@model Cod.Models.Post
+
+<div class="card-body">
+    <div class="d-flex justify-content-between flex-row mb-2">
+        <div class="">
+            
             <i class="bi bi-person"></i> @Model.Profile.FirstName @Model.Profile.LastName
         </div>
         <div>
-            <i class="bg-info bi-globe"></i> @Model.Group.Name
+            <i class="bi bi-globe"></i> @Model.Group.Name
         </div>
-        <span class="alert-success">@Model.CreationDate</span>
+        <span>@Model.CreationDate</span>
     </div>
-    <div class="card=text">@Model.Content</div>
+    <div class="card=text ">@Model.Content</div>
 </div>
+
+<!-- TODO modify (adauga click pe imagini ca sa poti vedea profilu)-->

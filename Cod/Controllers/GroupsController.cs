@@ -22,6 +22,7 @@ namespace Cod.Controllers
             if (TempData.ContainsKey("message"))
             {
                 ViewBag.message = TempData["message"].ToString();
+                ViewBag.messageType = TempData["messageType"].ToString();
             }
 
             var groups = db.Groups.Include("Posts").Include("Posts.Comments");
@@ -31,7 +32,7 @@ namespace Cod.Controllers
 
         public ActionResult Show(int id)
         {
-            Group group = db.Groups.Include("Posts").Include("Posts.Comments")
+            Group group = db.Groups.Include("Posts").Include("Posts.Comments").Include("Posts.Profile")
                               .Where(gr => gr.Id == id)
                               .First();
             return View(group);
@@ -100,22 +101,47 @@ namespace Cod.Controllers
             return RedirectToAction("Index");
         }
 
+
+        [HttpPost]
+        public ActionResult GroupJoin(int id)
+        {
+            Group group = db.Groups.Find(id);
+
+            if (group != null)
+            {
+                // verific sa nu fiu deja adaugat in acel grup
+                var userGroup = db.UserGroup.Where(x => x.ProfileId == um.GetUserId(User) && x.GroupId == id);
+
+                // sunt deja in grup, inseamna ca ies
+                if (userGroup.Any())
+                {
+                    ProfileGroup remove = userGroup.First();
+                    db.UserGroup.Remove(remove);
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+                else // intru pe grup
+                {
+                    // il adaug
+                    ProfileGroup newItem = new ProfileGroup { ProfileId = um.GetUserId(User), GroupId = id };
+                    db.UserGroup.Add(newItem);
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+            }
+            else
+            {
+                // bad group request
+                TempData["message"] = "Nu exista grupul pe care ati dorit sa il accesati!";
+                TempData["messageType"] = "alert-danger";
+                return RedirectToAction("Index");
+            }
+        }
+
         private void SetAccessRights()
         {
             ViewBag.EsteAdmin = User.IsInRole("Admin");
             ViewBag.UserCurent = um.GetUserId(User);
-        }
-
-        [HttpPost]
-        public void JoinGroup(int id)
-        {
-            var group = db.Groups.Where(x => x.Id == id);
-
-            if (group.Any())
-            {
-                // verific sa nu fiu deja adaugat in acel grup
-            
-            }
         }
     }
 }

@@ -4,29 +4,37 @@
     ViewBag.Title = "Adauga grup";
 }
 
-<h2> @ViewBag.Title </h2>
+<h2 class="text-center"> @ViewBag.Title </h2>
+<hr/>
 
-@Html.ValidationSummary(false, "", new {@class = "text-danger"})
+<br/>
+@Html.ValidationSummary(false, "", new { @class = "text-danger" })
 @using (Html.BeginForm(actionName: "New", controllerName: "Groups", method: FormMethod.Post))
 {
+    <div class="card p-2">
+        <div class="text-center">
+            @Html.Label("Name", "Numele grupului")
+        </div>
 
-    @Html.Label("Name", "Numele grupului")
-    <br />
+        @Html.TextBox("Name", null, new { @class = "form-control" })
 
-    @Html.TextBox("Name", null, new { @class = "form-control" })
-
-    @Html.ValidationMessageFor(m => m.Name, null, new { @class = "text-danger" })
+        @Html.ValidationMessageFor(m => m.Name, null, new { @class = "text-danger" })
+    </div>
     <br/>
 
-    @Html.Label("Description", "Descrierea grupului")
+    <div class="card p-2">
+        <div class="text-center">
+            @Html.Label("Description", "Descrierea grupului")
+        </div>
+        <br />
+
+        @Html.TextBox("Description", null, new { @class = "form-control" })
+    </div>
     <br />
 
-    @Html.TextBox("Description", null, new { @class = "form-control" })
-
-    <br />
-    <br />
-
-    <button class="btn btn-success" type="submit">Adauga grup</button>
+    <div class="d-flex justify-content-center flex-row m-2 mt-0">
+        <button class="btn btn-success" type="submit">Adauga grup</button>
+    </div>
 
 }
 

@@ -12,7 +12,6 @@ namespace Cod.Models
         [Required(ErrorMessage = "Introduceti continutul postarii!")]
         public string Content { get; set; }
         public string? ProfileId { get; set; }
-        // TODO vreau sa stiu care user a creat grupul?
         public virtual ApplicationUser? Profile { get; set; }
         [Required(ErrorMessage = "Grupul in care se face postarea trebuie selectat")]
         public int GroupId { get; set; }
