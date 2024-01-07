@@ -20,7 +20,9 @@
                 @Html.DropDownListFor(m => m.GroupId,
                          new SelectList(Model.Groups, "Value", "Text"),
                          "Selectati grupul", new { @class = "form-control" })
-                @Html.ValidationMessageFor(m => m.GroupId, "The group in which to write post is required", new { @class = "text-danger" })
+
+                // TODO de ce imi afiseaza validation message cand intru pe view?
+                @Html.ValidationMessageFor(m => m.GroupId, "Grupul in care se face postarea trebuie selectat", new { @class = "text-danger" })
                 <br />
 
                 <br />

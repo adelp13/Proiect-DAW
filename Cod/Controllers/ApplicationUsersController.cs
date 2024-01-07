@@ -102,19 +102,26 @@ namespace Cod.Controllers
             // TODO do I really need to include Follows?
 
             ApplicationUser user = db.Users.Include("Follows").Where(us => us.Id == id).First();
+            // daca vreau sa ma vad pe mine pot sa ma vad indiferent de conditii
+            if (user.Id == um.GetUserId(User))
+            {
+                return View(user);
+            }
             //ApplicationUser reqUser = db.Users.Include("Follows").Where(us => us.Id == um.GetUserId(User)).First();
             // if the user we are looking for has a private profile we have 2 cases:
             // the user sending the request is not in the follow list, then we must ask for a follow request
             // otherwise, we can see their profile
             if (user.isPrivate == true)
             {
-                var follow = db.Follows.Where(us => us.FollowedProfileId == user.Id && us.FollowingProfileId == um.GetUserId(User)).First();
-                if (follow != null)
+                var follow = db.Follows.Where(us => us.FollowedProfileId == user.Id && us.FollowingProfileId == um.GetUserId(User));
+                if (follow.Any())
                 {
                     return View(user);
                 }
                 else
                 {
+                    // TODO add viewbag message for not following
+                    // or think about what to do
                     return RedirectToAction("Index");
                 }
             }

@@ -7,11 +7,11 @@ namespace Cod.Models
     {
         [Key]
         public int Id { get; set; }
-        [Required(ErrorMessage = "Group Name required")]
+        [Required(ErrorMessage = "Introduceti numele grupuului!")]
         public string Name { get; set; }
         public string? Description { get; set; }
         public DateTime CreationDate { get; set; }
-        public virtual ICollection<ApplicationUser>? Profiles { get; set; }
+        public virtual ICollection<ProfileGroup>? Profiles { get; set; }
         public virtual ICollection<Post>? Posts { get; set; }
     }
 }

@@ -1,7 +1,7 @@
 ﻿@model Cod.Models.Group
 
 @{
-    ViewBag.Title = "Add group";
+    ViewBag.Title = "Adauga grup";
 }
 
 <h2> @ViewBag.Title </h2>
@@ -10,7 +10,7 @@
 @using (Html.BeginForm(actionName: "New", controllerName: "Groups", method: FormMethod.Post))
 {
 
-    @Html.Label("Name", "Name of group")
+    @Html.Label("Name", "Numele grupului")
     <br />
 
     @Html.TextBox("Name", null, new { @class = "form-control" })
@@ -18,7 +18,7 @@
     @Html.ValidationMessageFor(m => m.Name, null, new { @class = "text-danger" })
     <br/>
 
-    @Html.Label("Description", "Description of group")
+    @Html.Label("Description", "Descrierea grupului")
     <br />
 
     @Html.TextBox("Description", null, new { @class = "form-control" })

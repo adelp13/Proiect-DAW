@@ -17,6 +17,7 @@ namespace Cod.Data
         public DbSet<Post> Posts { get; set; }
         public DbSet<ProfileFollowsProfile> Follows { get; set; }
         public DbSet<ProfileRequestsProfile> FollowRequests { get; set; }
+        public DbSet<ProfileGroup> UserGroup { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelbuilder)
         {
@@ -31,6 +32,9 @@ namespace Cod.Data
             modelbuilder.Entity<ProfileRequestsProfile>()
                 .HasKey(ab => new { ab.Id, ab.RequestingProfileId, ab.RequestedProfileId });
 
+            modelbuilder.Entity<ProfileGroup>()
+                .HasKey(ab => new { ab.Id, ab.ProfileId, ab.GroupId });
+
             // de asemenea stergem spre final increment-urile
 
             modelbuilder.Entity<ProfileFollowsProfile>()
@@ -43,6 +47,18 @@ namespace Cod.Data
                 .HasOne(ab => ab.RequestedProfile)
                 .WithMany(ab => ab.Requests)
                 .HasForeignKey(ab => ab.RequestedProfileId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelbuilder.Entity<ProfileGroup>()
+                .HasOne(ab => ab.Profile)
+                .WithMany(ab => ab.Groups)
+                .HasForeignKey(ab => ab.ProfileId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelbuilder.Entity<ProfileGroup>()
+                .HasOne(ab => ab.Group)
+                .WithMany(ab => ab.Profiles)
+                .HasForeignKey(ab => ab.GroupId)
                 .OnDelete(DeleteBehavior.NoAction);
         }
     }

@@ -22,21 +22,6 @@ namespace Cod.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("ApplicationUserGroup", b =>
-                {
-                    b.Property<int>("GroupsId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ProfilesId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("GroupsId", "ProfilesId");
-
-                    b.HasIndex("ProfilesId");
-
-                    b.ToTable("ApplicationUserGroup");
-                });
-
             modelBuilder.Entity("Cod.Models.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
@@ -219,6 +204,29 @@ namespace Cod.Migrations
                     b.ToTable("Follows");
                 });
 
+            modelBuilder.Entity("Cod.Models.ProfileGroup", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("ProfileId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("GroupId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id", "ProfileId", "GroupId");
+
+                    b.HasIndex("GroupId");
+
+                    b.HasIndex("ProfileId");
+
+                    b.ToTable("UserGroup");
+                });
+
             modelBuilder.Entity("Cod.Models.ProfileRequestsProfile", b =>
                 {
                     b.Property<int>("Id")
@@ -379,21 +387,6 @@ namespace Cod.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("ApplicationUserGroup", b =>
-                {
-                    b.HasOne("Cod.Models.Group", null)
-                        .WithMany()
-                        .HasForeignKey("GroupsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Cod.Models.ApplicationUser", null)
-                        .WithMany()
-                        .HasForeignKey("ProfilesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Cod.Models.Comment", b =>
                 {
                     b.HasOne("Cod.Models.Post", null)
@@ -441,6 +434,25 @@ namespace Cod.Migrations
                     b.Navigation("FollowedProfile");
 
                     b.Navigation("FollowingProfile");
+                });
+
+            modelBuilder.Entity("Cod.Models.ProfileGroup", b =>
+                {
+                    b.HasOne("Cod.Models.Group", "Group")
+                        .WithMany("Profiles")
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Cod.Models.ApplicationUser", "Profile")
+                        .WithMany("Groups")
+                        .HasForeignKey("ProfileId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Group");
+
+                    b.Navigation("Profile");
                 });
 
             modelBuilder.Entity("Cod.Models.ProfileRequestsProfile", b =>
@@ -519,6 +531,8 @@ namespace Cod.Migrations
 
                     b.Navigation("Follows");
 
+                    b.Navigation("Groups");
+
                     b.Navigation("Posts");
 
                     b.Navigation("Requests");
@@ -527,6 +541,8 @@ namespace Cod.Migrations
             modelBuilder.Entity("Cod.Models.Group", b =>
                 {
                     b.Navigation("Posts");
+
+                    b.Navigation("Profiles");
                 });
 
             modelBuilder.Entity("Cod.Models.Post", b =>

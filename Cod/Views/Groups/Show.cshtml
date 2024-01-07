@@ -1,6 +1,6 @@
 ﻿@model Cod.Models.Group
 @{
-    ViewBag.Title = "Show Group";
+    ViewBag.Title = "Afisare grup";
 }
 
 <h2>@ViewBag.Title</h2>
@@ -12,7 +12,7 @@
 @*<span> @Model.Posts.count </span> *@
 <form method="post" action="/Groups/Delete/@Model.Id">
 
-    <button class="btn btn-danger" type = "submit"> Delete current group </button>
+    <button class="btn btn-danger" type = "submit"> Sterge grupul curent </button>
 
 </form>
 
@@ -25,8 +25,8 @@
             </div>
 }
 
-<a class="btn alert-success" href="/Posts/New"> Add post </a> <br />
-<a class="btn alert-success" href="/Groups/Index"> Show all groups </a>
+<a class="btn alert-success" href="/Posts/New"> Adauga postare </a> <br />
+<a class="btn alert-success" href="/Groups/Index"> Afiseaza toate grupurile </a>
 
 <br />
 <hr />

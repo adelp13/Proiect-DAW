@@ -1,5 +1,6 @@
 ﻿using Cod.Data;
 using Cod.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
@@ -9,10 +10,12 @@ namespace Cod.Controllers
     public class GroupsController : Controller
     {
         private readonly ApplicationDbContext db;
+        private readonly UserManager<ApplicationUser> um;
 
-        public GroupsController(ApplicationDbContext context)
+        public GroupsController(ApplicationDbContext context, UserManager<ApplicationUser> _um)
         {
             db = context;
+            um = _um;
         }
         public ActionResult Index()
         {
@@ -48,7 +51,8 @@ namespace Cod.Controllers
             {
                 db.Groups.Add(gr);
                 db.SaveChanges();
-                TempData["message"] = "Gr";
+                TempData["message"] = "Grupul a fost adaugat cu succes!";
+                TempData["messageType"] = "alert-success";
                 return RedirectToAction("Index");
             }
 
@@ -75,7 +79,8 @@ namespace Cod.Controllers
                 group.Description = groupToEdit.Description;
                 group.CreationDate = groupToEdit.CreationDate;
                 db.SaveChanges();
-                TempData["message"] = "Group modified!";
+                TempData["message"] = "Grupul a fost modificat cu succes!";
+                TempData["messageType"] = "alert-success";
                 return RedirectToAction("Index");
             }
             catch (Exception e)
@@ -90,8 +95,27 @@ namespace Cod.Controllers
             Group group = db.Groups.Find(id);
             db.Groups.Remove(group);
             db.SaveChanges();
-            TempData["message"] = "Group has been deleted";
+            TempData["message"] = "Grupul a fost sters cu succes!";
+            TempData["messageType"] = "alert-success";
             return RedirectToAction("Index");
+        }
+
+        private void SetAccessRights()
+        {
+            ViewBag.EsteAdmin = User.IsInRole("Admin");
+            ViewBag.UserCurent = um.GetUserId(User);
+        }
+
+        [HttpPost]
+        public void JoinGroup(int id)
+        {
+            var group = db.Groups.Where(x => x.Id == id);
+
+            if (group.Any())
+            {
+                // verific sa nu fiu deja adaugat in acel grup
+            
+            }
         }
     }
 }

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Cod.Migrations
 {
-    public partial class init1 : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -223,30 +223,6 @@ namespace Cod.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ApplicationUserGroup",
-                columns: table => new
-                {
-                    GroupsId = table.Column<int>(type: "int", nullable: false),
-                    ProfilesId = table.Column<string>(type: "nvarchar(450)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ApplicationUserGroup", x => new { x.GroupsId, x.ProfilesId });
-                    table.ForeignKey(
-                        name: "FK_ApplicationUserGroup_AspNetUsers_ProfilesId",
-                        column: x => x.ProfilesId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ApplicationUserGroup_Groups_GroupsId",
-                        column: x => x.GroupsId,
-                        principalTable: "Groups",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Posts",
                 columns: table => new
                 {
@@ -274,6 +250,30 @@ namespace Cod.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "UserGroup",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProfileId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    GroupId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserGroup", x => new { x.Id, x.ProfileId, x.GroupId });
+                    table.ForeignKey(
+                        name: "FK_UserGroup_AspNetUsers_ProfileId",
+                        column: x => x.ProfileId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_UserGroup_Groups_GroupId",
+                        column: x => x.GroupId,
+                        principalTable: "Groups",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Comments",
                 columns: table => new
                 {
@@ -298,11 +298,6 @@ namespace Cod.Migrations
                         principalTable: "Posts",
                         principalColumn: "Id");
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ApplicationUserGroup_ProfilesId",
-                table: "ApplicationUserGroup",
-                column: "ProfilesId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -382,13 +377,20 @@ namespace Cod.Migrations
                 name: "IX_Posts_ProfileId",
                 table: "Posts",
                 column: "ProfileId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserGroup_GroupId",
+                table: "UserGroup",
+                column: "GroupId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserGroup_ProfileId",
+                table: "UserGroup",
+                column: "ProfileId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "ApplicationUserGroup");
-
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -412,6 +414,9 @@ namespace Cod.Migrations
 
             migrationBuilder.DropTable(
                 name: "Follows");
+
+            migrationBuilder.DropTable(
+                name: "UserGroup");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

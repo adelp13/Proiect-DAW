@@ -2,6 +2,10 @@
 
 @foreach (ApplicationUser user in ViewBag.Users)
 {
-    @Html.Partial("ProfileDetails", user);
-    
+    <div class="d-flex flex-row justify-content-between margin-auto">
+        @Html.Partial("ProfileDetails", user)
+        <form action="/ApplicationUsers/Show/@user.Id">
+            <button class="btn btn-danger" type="submit">Afiseaza utilizator</button>
+        </form>
+    </div>
 }

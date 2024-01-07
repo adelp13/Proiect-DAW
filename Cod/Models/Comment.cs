@@ -10,7 +10,7 @@ namespace Cod.Models
         public int Id { get; set; }
         public string? ProfileId { get; set; }
         public virtual ApplicationUser? Profile { get; set; }
-        [Required(ErrorMessage = "Comment Content Required")]
+        [Required(ErrorMessage = "Introduceti continutul comentariului!")]
         public string Content { get; set; }
         public DateTime CreationDate { get; set; }
         public int? PostId { get; set; }
