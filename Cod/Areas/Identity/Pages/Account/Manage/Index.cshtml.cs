@@ -30,6 +30,7 @@ namespace Cod.Areas.Identity.Pages.Account.Manage
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
+        [Display(Name = "Nume de utilizator")]
         public string Username { get; set; }
 
         /// <summary>
@@ -56,12 +57,12 @@ namespace Cod.Areas.Identity.Pages.Account.Manage
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Display(Name = "First Name")]
+            [Display(Name = "Prenume")]
             public string FirstName { get; set; }
-            [Display(Name = "Last Name")]
+            [Display(Name = "Nume")]
             public string LastName { get; set; }
             [Phone]
-            [Display(Name = "Phone number")]
+            [Display(Name = "Numar de telefon")]
             public string PhoneNumber { get; set; }
             public bool isPrivate { get; set; } 
         }
@@ -119,7 +120,7 @@ namespace Cod.Areas.Identity.Pages.Account.Manage
                 var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
                 if (!setPhoneResult.Succeeded)
                 {
-                    StatusMessage = "Unexpected error when trying to set phone number.";
+                    StatusMessage = "Eroare neasteptata la actualizarea numarului de telefon.";
                     return RedirectToPage();
                 }
             }
@@ -141,7 +142,7 @@ namespace Cod.Areas.Identity.Pages.Account.Manage
             }
 
             await _signInManager.RefreshSignInAsync(user);
-            StatusMessage = "Your profile has been updated";
+            StatusMessage = "Profilul tau a fost actualizat cu succes!";
             return RedirectToPage();
         }
     }

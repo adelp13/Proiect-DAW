@@ -90,6 +90,7 @@ namespace Cod.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "User,Admin")]
         public IActionResult Edit(int id)
         {
             Post post = db.Posts.Include("Profile").Include("Group").Where(x => x.Id == id).First();
@@ -105,6 +106,7 @@ namespace Cod.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "User,Admin")]
         public IActionResult Edit(int id, Post reqPost)
         {
             Post post = db.Posts.Find(id);
@@ -131,6 +133,7 @@ namespace Cod.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "User,Admin")]
         public IActionResult Delete(int id)
         {
             Post post = db.Posts.Where(x => x.Id == id).First();

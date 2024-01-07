@@ -148,6 +148,12 @@ namespace Cod.Controllers
         }
 
 
+        [NonAction]
+        public bool isInGroup(int groupId)
+        {
+            return db.UserGroup.Where(x => x.ProfileId == um.GetUserId(User) && x.GroupId == groupId).Any();
+        }
+
         [HttpPost]
         [Authorize(Roles ="User,Admin")]
         public ActionResult GroupJoin(int id)
@@ -162,6 +168,7 @@ namespace Cod.Controllers
                 // sunt deja in grup, inseamna ca ies
                 if (userGroup.Any())
                 {
+                    // TODO cand ies din grup, toate postarile mele si comentariile aferente vor fi sterse
                     ProfileGroup remove = userGroup.First();
                     db.UserGroup.Remove(remove);
                     db.SaveChanges();

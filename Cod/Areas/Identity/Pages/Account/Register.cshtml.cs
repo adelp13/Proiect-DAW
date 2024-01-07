@@ -87,7 +87,7 @@ namespace Cod.Areas.Identity.Pages.Account
             [Required]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
             [DataType(DataType.Password)]
-            [Display(Name = "Password")]
+            [Display(Name = "Parola")]
             public string Password { get; set; }
 
             /// <summary>
@@ -95,7 +95,7 @@ namespace Cod.Areas.Identity.Pages.Account
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
             [DataType(DataType.Password)]
-            [Display(Name = "Confirm password")]
+            [Display(Name = "Confirma parola")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
 
@@ -104,7 +104,7 @@ namespace Cod.Areas.Identity.Pages.Account
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
             [Required]
-            [Display(Name = "First Name")]
+            [Display(Name = "Prenume")]
             public string FirstName { get; set; }
 
             /// <summary>
@@ -112,7 +112,7 @@ namespace Cod.Areas.Identity.Pages.Account
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
             [Required]
-            [Display(Name = "Last Name")]
+            [Display(Name = "Nume")]
             public string LastName { get; set; }
         }
 
@@ -147,6 +147,11 @@ namespace Cod.Areas.Identity.Pages.Account
                     _logger.LogInformation("User created a new account with password.");
 
                     var userId = await _userManager.GetUserIdAsync(user);
+
+                    // aici adaug userul la rolul de user
+                    // hardcodare!
+
+                    await _userManager.AddToRoleAsync(user, "User");
                     
                     return RedirectToAction("Index");
                     
