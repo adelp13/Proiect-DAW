@@ -17,7 +17,7 @@ namespace Cod.Data
         public DbSet<Post> Posts { get; set; }
         public DbSet<ProfileFollowsProfile> Follows { get; set; }
         public DbSet<ProfileRequestsProfile> FollowRequests { get; set; }
-        
+
         protected override void OnModelCreating(ModelBuilder modelbuilder)
         {
             // definirea relatiei many-to-many profile urmareste profile
@@ -26,37 +26,24 @@ namespace Cod.Data
 
             // definire primary key compus
             modelbuilder.Entity<ProfileFollowsProfile>()
-                .HasKey(ab => new { ab.Id, ab.FollowingProfileId, ab.FollowedProfileId});
+                .HasKey(ab => new { ab.Id, ab.FollowingProfileId, ab.FollowedProfileId });
 
             modelbuilder.Entity<ProfileRequestsProfile>()
-                .HasKey(ab => new { ab.Id, ab.RequestingProfileId, ab.RequestedProfileId});
+                .HasKey(ab => new { ab.Id, ab.RequestingProfileId, ab.RequestedProfileId });
 
-
-            // definire relatii cu modelele profile si profile (fk)
-
-            // HACK cand generam o migratie cu acest appdbcontext, in tabelele asociative se
-            // mai adauga o coloana extra. momentan o stergem manual din codul migratiei.
             // de asemenea stergem spre final increment-urile
 
             modelbuilder.Entity<ProfileFollowsProfile>()
-                .HasOne(ab => ab.FollowingProfile)
-                .WithMany()
-                .HasForeignKey(ab => ab.FollowingProfileId);
-
-            modelbuilder.Entity<ProfileFollowsProfile>()
                 .HasOne(ab => ab.FollowedProfile)
-                .WithMany()
-                .HasForeignKey(ab => ab.FollowedProfileId);
-
-            modelbuilder.Entity<ProfileRequestsProfile>()
-                .HasOne(ab => ab.RequestingProfile)
-                .WithMany()
-                .HasForeignKey(ab => ab.RequestingProfileId);
+                .WithMany(ab => ab.Follows)
+                .HasForeignKey(ab => ab.FollowedProfileId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelbuilder.Entity<ProfileRequestsProfile>()
                 .HasOne(ab => ab.RequestedProfile)
-                .WithMany()
-                .HasForeignKey(ab => ab.RequestedProfileId);
+                .WithMany(ab => ab.Requests)
+                .HasForeignKey(ab => ab.RequestedProfileId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

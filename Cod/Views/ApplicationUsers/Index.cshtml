@@ -1,0 +1,7 @@
+﻿<h1>Salut lume!</h1>
+
+@foreach (ApplicationUser user in ViewBag.Users)
+{
+    @Html.Partial("ProfileDetails", user);
+    
+}

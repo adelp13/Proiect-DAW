@@ -63,7 +63,7 @@ namespace Cod.Areas.Identity.Pages.Account.Manage
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
-            // public bool isPrivate {  get; set; } 
+            public bool isPrivate { get; set; } 
         }
 
         private async Task LoadAsync(ApplicationUser user)
@@ -72,13 +72,15 @@ namespace Cod.Areas.Identity.Pages.Account.Manage
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
             var firstName = user.FirstName;
             var lastName = user.LastName;
+            var isPriv = user.isPrivate;
             Username = userName;
 
             Input = new InputModel
             {
                 PhoneNumber = phoneNumber,
                 FirstName = firstName,
-                LastName = lastName
+                LastName = lastName,
+                isPrivate = isPriv
             };
         }
 
@@ -129,6 +131,12 @@ namespace Cod.Areas.Identity.Pages.Account.Manage
             if (Input.LastName != lastName)
             {
                 user.LastName = Input.LastName;
+                await _userManager.UpdateAsync(user);
+            }
+
+            if (Input.isPrivate != isPrivate)
+            {
+                user.isPrivate = Input.isPrivate;
                 await _userManager.UpdateAsync(user);
             }
 

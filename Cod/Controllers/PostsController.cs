@@ -1,5 +1,6 @@
 ﻿using Cod.Data;
 using Cod.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -19,6 +20,7 @@ namespace Cod.Controllers
             um = _um;
         }
 
+        [Authorize(Roles = "User,Admin")]
         public IActionResult Index()
         {
             var posts = db.Posts.Include("Profile").Include("Comments").Include("Group").Include("Comments.Profile").OrderBy(x => x.CreationDate);

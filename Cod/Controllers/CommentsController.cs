@@ -1,5 +1,6 @@
 ﻿using Cod.Data;
 using Cod.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -21,6 +22,7 @@ namespace Cod.Controllers
 
         // TODO debug method
 
+        [Authorize(Roles = "User,Admin")]
         public IActionResult Index()
         {
             var comments = db.Comments.Include("Profile").OrderBy(x => x.CreationDate);
@@ -76,29 +78,67 @@ namespace Cod.Controllers
         // TODO check if user that made the post is the user trying to modify the post
 
         [HttpGet]
+        [Authorize(Roles = "User,Admin")]
         public IActionResult Edit(int id)
         {
             Comment comment = db.Comments.Where(x => x.Id == id).First();
 
-            return View(comment);
+            if (comment.ProfileId == um.GetUserId(User) || User.IsInRole("Admin"))
+            {
+                return View(comment);
+            }
+            else
+            {
+                TempData["message"] = "Nu puteti modifica acest comentariu!";
+                TempData["messageType"] = "alert-danger";
+                // TODO where redirect?
+                return RedirectToAction("/Posts/Show/" + comment.PostId);
+            }
         }
 
         [HttpPost]
+        [Authorize(Roles = "User,Admin")]
         public IActionResult Edit(int id, Comment reqComment)
         {
             Comment comment = db.Comments.Find(id);
-            comment.Content = reqComment.Content;
-            db.SaveChanges();
-            return RedirectToAction("Index");
+
+            if (comment.ProfileId == um.GetUserId(User) || User.IsInRole("Admin"))
+            {
+                comment.Content = reqComment.Content;
+                db.SaveChanges();
+                TempData["message"] = "Comentariul a fost modificat!";
+                TempData["messageType"] = "alert-success";
+                // TODO where redirect
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                TempData["message"] = "Nu puteti modifica acest comentariu!";
+                TempData["messageType"] = "alert-danger";
+                // TODO where redirect?
+                return RedirectToAction("/Posts/Show/" + comment.PostId);
+            }
         }
 
         [HttpPost]
+        [Authorize(Roles = "User,Admin")]
         public IActionResult Delete(int id)
         {
             Comment comment = db.Comments.Where(x => x.Id == id).First();
-            db.Comments.Remove(comment);
-            db.SaveChanges();
-            return RedirectToAction("Index");
+            if (comment.ProfileId == um.GetUserId(User) || User.IsInRole("Admin"))
+            {
+                db.Comments.Remove(comment);
+                db.SaveChanges();
+                TempData["message"] = "Comentariul a fost sters!";
+                TempData["messageType"] = "alert-success";
+                return RedirectToAction("/Posts/Show/" + comment.PostId);
+            } else
+            {
+                TempData["message"] = "Nu puteti sterge acest comentariu!";
+                TempData["messageType"] = "alert-danger";
+                // TODO where redirect?
+                return RedirectToAction("/Posts/Show/" + comment.PostId);
+            }
         }
     }
 }

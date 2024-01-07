@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Cod.Migrations
 {
-    public partial class addfollow : Migration
+    public partial class init1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -179,24 +179,22 @@ namespace Cod.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     RequestingProfileId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    RequestedProfileId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    RequestedProfileId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_FollowRequests", x => new { x.Id, x.RequestingProfileId, x.RequestedProfileId });
-                    
                     table.ForeignKey(
                         name: "FK_FollowRequests_AspNetUsers_RequestedProfileId",
                         column: x => x.RequestedProfileId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_FollowRequests_AspNetUsers_RequestingProfileId",
                         column: x => x.RequestingProfileId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -206,8 +204,7 @@ namespace Cod.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     FollowingProfileId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    FollowedProfileId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    //ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    FollowedProfileId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -216,14 +213,13 @@ namespace Cod.Migrations
                         name: "FK_Follows_AspNetUsers_FollowedProfileId",
                         column: x => x.FollowedProfileId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Follows_AspNetUsers_FollowingProfileId",
                         column: x => x.FollowingProfileId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(

@@ -4,7 +4,6 @@ using Cod.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -12,10 +11,9 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Cod.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231217204958_add-follow")]
-    partial class addfollow
+    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -212,12 +210,7 @@ namespace Cod.Migrations
                     b.Property<string>("FollowedProfileId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("ApplicationUserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id", "FollowingProfileId", "FollowedProfileId");
-
-                    b.HasIndex("ApplicationUserId");
 
                     b.HasIndex("FollowedProfileId");
 
@@ -240,12 +233,7 @@ namespace Cod.Migrations
                     b.Property<string>("RequestedProfileId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("ApplicationUserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id", "RequestingProfileId", "RequestedProfileId");
-
-                    b.HasIndex("ApplicationUserId");
 
                     b.HasIndex("RequestedProfileId");
 
@@ -438,14 +426,10 @@ namespace Cod.Migrations
 
             modelBuilder.Entity("Cod.Models.ProfileFollowsProfile", b =>
                 {
-                    b.HasOne("Cod.Models.ApplicationUser", null)
-                        .WithMany("Follows")
-                        .HasForeignKey("ApplicationUserId");
-
                     b.HasOne("Cod.Models.ApplicationUser", "FollowedProfile")
-                        .WithMany()
+                        .WithMany("Follows")
                         .HasForeignKey("FollowedProfileId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("Cod.Models.ApplicationUser", "FollowingProfile")
@@ -461,14 +445,10 @@ namespace Cod.Migrations
 
             modelBuilder.Entity("Cod.Models.ProfileRequestsProfile", b =>
                 {
-                    b.HasOne("Cod.Models.ApplicationUser", null)
-                        .WithMany("Requests")
-                        .HasForeignKey("ApplicationUserId");
-
                     b.HasOne("Cod.Models.ApplicationUser", "RequestedProfile")
-                        .WithMany()
+                        .WithMany("Requests")
                         .HasForeignKey("RequestedProfileId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("Cod.Models.ApplicationUser", "RequestingProfile")
