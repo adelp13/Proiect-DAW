@@ -20,55 +20,36 @@ namespace Cod.Controllers
             rm = _rm;
         }
 
-        // TODO debug method
-
+        [HttpGet]
         [Authorize(Roles = "User,Admin")]
-        public IActionResult Index()
+        public IActionResult New(int? id)
         {
-            var comments = db.Comments.Include("Profile").OrderBy(x => x.CreationDate);
-            ViewBag.Comments = comments;
-
-            return View();
-        }
-
-        [HttpGet]
-        public IActionResult Show(int id)
-        {
-            Comment comment = db.Comments.Include("Profile").Where(x => x.Id == id).First();
-            return View(comment);
-        }
-
-        // TODO link comment with post
-
-        [HttpPost]
-        public IActionResult Show([FromForm] Comment comment)
-        {
-            return View(comment);
-        }
-
-        [HttpGet]
-        public IActionResult New(int id)
-        {
+            if (id == null)
+            {
+                return RedirectToAction("Index","Posts");
+            }
+            Post post = db.Posts.Find(id);
+            if (post == null)
+            {
+                return RedirectToAction("Index","Posts");
+            }
             Comment comment = new Comment();
+            comment.PostId = id;
             return View(comment);
         }
 
         [HttpPost]
-        public IActionResult New(Comment comment)
+        public IActionResult New([FromForm] Comment comment)
         {
             // TODO validate ModelState.IsValid
-            // brute force values
             comment.ProfileId = um.GetUserId(User);
             comment.CreationDate = DateTime.Now;
-            // TODO hardcodat
-            comment.PostId = 2;
-            db.SaveChanges();
 
             if (ModelState.IsValid)
             {
                 db.Comments.Add(comment);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Posts");
             } else
             {
                 return View(comment);
@@ -102,21 +83,27 @@ namespace Cod.Controllers
         {
             Comment comment = db.Comments.Find(id);
 
-            if (comment.ProfileId == um.GetUserId(User) || User.IsInRole("Admin"))
+            if (ModelState.IsValid)
             {
-                comment.Content = reqComment.Content;
-                db.SaveChanges();
-                TempData["message"] = "Comentariul a fost modificat!";
-                TempData["messageType"] = "alert-success";
-                // TODO where redirect
-                return RedirectToAction("Index");
+                if (comment.ProfileId == um.GetUserId(User) || User.IsInRole("Admin"))
+                {
+
+                    comment.Content = reqComment.Content;
+                    db.SaveChanges();
+                    TempData["message"] = "Comentariul a fost modificat!";
+                    TempData["messageType"] = "alert-success";
+                    return RedirectToAction("Index", "Posts");
+                }
+                else
+                {
+                    TempData["message"] = "Nu puteti modifica acest comentariu!";
+                    TempData["messageType"] = "alert-danger";
+                    return RedirectToAction("Index", "Posts");
+                }
             }
             else
             {
-                TempData["message"] = "Nu puteti modifica acest comentariu!";
-                TempData["messageType"] = "alert-danger";
-                // TODO where redirect?
-                return RedirectToAction("/Posts/Show/" + comment.PostId);
+                return View(reqComment);
             }
         }
 
@@ -131,13 +118,12 @@ namespace Cod.Controllers
                 db.SaveChanges();
                 TempData["message"] = "Comentariul a fost sters!";
                 TempData["messageType"] = "alert-success";
-                return RedirectToAction("/Posts/Show/" + comment.PostId);
+                return RedirectToAction("Index", "Posts");
             } else
             {
                 TempData["message"] = "Nu puteti sterge acest comentariu!";
                 TempData["messageType"] = "alert-danger";
-                // TODO where redirect?
-                return RedirectToAction("/Posts/Show/" + comment.PostId);
+                return RedirectToAction("Index", "Posts");
             }
         }
     }

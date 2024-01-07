@@ -7,6 +7,7 @@ namespace Cod.Models
     public class Post
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public DateTime CreationDate { get; set; }
         [Required(ErrorMessage = "Introduceti continutul postarii!")]
