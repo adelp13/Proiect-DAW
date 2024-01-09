@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Immutable;
 using System.Data;
 
 namespace Cod.Controllers
@@ -18,6 +19,7 @@ namespace Cod.Controllers
             db = context;
             um = _um;
         }
+
         public ActionResult Index()
         {
             if (TempData.ContainsKey("message"))
@@ -26,17 +28,30 @@ namespace Cod.Controllers
                 ViewBag.messageType = TempData["messageType"].ToString();
             }
 
-            var groups = db.Groups.Include("Posts").Include("Posts.Profile");
+            var groups = db.Groups;
             ViewBag.Groups = groups;
             return View();
         }
 
         public ActionResult Show(int id)
         {
-            Group group = db.Groups.Include("Posts").Include("Posts.Profile")
-                              .Where(gr => gr.Id == id)
-                              .First();
-            return View(group);
+            var group = db.Groups.Include("Posts").Include("Posts.Profile")
+                              .Where(gr => gr.Id == id).OrderBy(x => x.CreationDate);
+            if (group.Any())
+            {
+                if (TempData["message"] != null)
+                {
+                    ViewBag.message = TempData["message"];
+                    ViewBag.messageType = TempData["messageType"];
+                }
+                ViewBag.isInGroup = db.UserGroup.Where(x => x.ProfileId == um.GetUserId(User) && x.GroupId == id).Any();
+                return View(group.First());
+            } else
+            {
+                TempData["message"] = "Ati incercat accesarea unui grup inexistent!";
+                TempData["messageType"] = "alert-danger";
+                return RedirectToAction("Index");
+            }
         }
 
         [HttpGet]
@@ -87,13 +102,21 @@ namespace Cod.Controllers
         public ActionResult Edit(int id)
         {
             Group group = db.Groups.Find(id);
-            if (User.IsInRole("Admin")){
-                return View(group);
+            if (group != null)
+            {
+                if (User.IsInRole("Admin")){
+                    return View(group);
+                } else
+                {
+                    TempData["message"] = "Nu aveti dreptul sa modificati acest grup!";
+                    TempData["messageType"] = "alert-danger";
+                    return RedirectToAction("Index", "Groups");
+                }
             } else
             {
-                TempData["message"] = "Nu puteti modifica acest grup!";
+                TempData["message"] = "Ati incercat modificarea unui grup inexistent!";
                 TempData["messageType"] = "alert-danger";
-                return RedirectToAction("Index", "Groups");
+                return RedirectToAction("Index");
             }
         }
 
@@ -131,27 +154,33 @@ namespace Cod.Controllers
         [Authorize(Roles = "Admin")]
         public ActionResult Delete(int id)
         {
-            if (User.IsInRole("Admin"))
+            var group = db.Groups.Include("Posts").Include("Posts.Comments").Where(x => x.Id == id);
+            if (group.Any())
             {
-                Group group = db.Groups.Find(id);
-                db.Groups.Remove(group);
-                db.SaveChanges();
-                TempData["message"] = "Grupul a fost sters cu succes!";
-                TempData["messageType"] = "alert-success";
-                return RedirectToAction("Index");
+                if (User.IsInRole("Admin"))
+                {
+                    db.Groups.Remove(group.First());
+                    ImmutableList<ProfileGroup> assoc = db.UserGroup.Where(x => x.GroupId == id).ToImmutableList();
+                    foreach (ProfileGroup elem in assoc)
+                    {
+                        db.UserGroup.Remove(elem);
+                    }
+                    db.SaveChanges();
+                    TempData["message"] = "Grupul a fost sters cu succes!";
+                    TempData["messageType"] = "alert-success";
+                    return RedirectToAction("Index");
+                } else
+                {
+                    TempData["message"] = "Nu aveti dreptul sa stergeti grupul!";
+                    TempData["messageType"] = "alert-danger";
+                    return RedirectToAction("Index", "Groups");
+                }
             } else
             {
-                TempData["message"] = "Nu aveti dreptul sa stergeti grupul!";
+                TempData["message"] = "Ati incercat stergerea unui grup inexistent!";
                 TempData["messageType"] = "alert-danger";
-                return RedirectToAction("Index", "Groups");
+                return RedirectToAction("Index");
             }
-        }
-
-
-        [NonAction]
-        public bool isInGroup(int groupId)
-        {
-            return db.UserGroup.Where(x => x.ProfileId == um.GetUserId(User) && x.GroupId == groupId).Any();
         }
 
         [HttpPost]
@@ -172,7 +201,7 @@ namespace Cod.Controllers
                     ProfileGroup remove = userGroup.First();
                     db.UserGroup.Remove(remove);
                     db.SaveChanges();
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Show", new {id = id});
                 }
                 else // intru pe grup
                 {
@@ -180,7 +209,7 @@ namespace Cod.Controllers
                     ProfileGroup newItem = new ProfileGroup { ProfileId = um.GetUserId(User), GroupId = id };
                     db.UserGroup.Add(newItem);
                     db.SaveChanges();
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Show", new {id = id});
                 }
             }
             else

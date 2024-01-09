@@ -61,6 +61,8 @@ namespace Cod.Controllers
             }
         }
 
+        // TODO verifica integritatea acestor metode (nu dau crash daca vreau sa accept aiurea de exemplu)
+
         [HttpPost]
         [Authorize(Roles = "User,Admin")]
         public void AcceptRequest(string id)

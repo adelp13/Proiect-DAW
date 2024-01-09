@@ -13,6 +13,7 @@ namespace Cod.Controllers
         private readonly ApplicationDbContext db;
         private readonly UserManager<ApplicationUser> um;
         private readonly RoleManager<IdentityRole> rm;
+
         public CommentsController(ApplicationDbContext _db, UserManager<ApplicationUser> _um, RoleManager<IdentityRole> _rm)
         {
             db = _db;
@@ -26,12 +27,16 @@ namespace Cod.Controllers
         {
             if (id == null)
             {
-                return RedirectToAction("Index","Posts");
+                TempData["message"] = "Ati incercat sa adaugati un comentariu fara sa precizati o postare!";
+                TempData["messageType"] = "alert-danger";
+                return RedirectToAction("Show","Posts", new {id = id});
             }
             Post post = db.Posts.Find(id);
             if (post == null)
             {
-                return RedirectToAction("Index","Posts");
+                TempData["message"] = "Ati incercat sa adaugati un comentariu la o postare inexistenta!";
+                TempData["messageType"] = "alert-danger";
+                return RedirectToAction("Show", "Posts", new { id = id });
             }
             Comment comment = new Comment();
             comment.PostId = id;
@@ -50,7 +55,7 @@ namespace Cod.Controllers
                 db.SaveChanges();
                 TempData["message"] = "Comentariul a fost adaugat cu succes!";
                 TempData["messageType"] = "alert-success";
-                return RedirectToAction("Index", "Posts");
+                return RedirectToAction("Show", "Posts", new { id = comment.PostId });
             } else
             {
                 return View(comment);
@@ -61,18 +66,25 @@ namespace Cod.Controllers
         [Authorize(Roles = "User,Admin")]
         public IActionResult Edit(int id)
         {
-            Comment comment = db.Comments.Where(x => x.Id == id).First();
+            var comment = db.Comments.Where(x => x.Id == id);
 
-            if (comment.ProfileId == um.GetUserId(User) || User.IsInRole("Admin"))
+            if (comment.Any())
             {
-                return View(comment);
-            }
-            else
+                if (comment.First().ProfileId == um.GetUserId(User) || User.IsInRole("Admin"))
+                {
+                    return View(comment.First());
+                }
+                else
+                {
+                    TempData["message"] = "Nu puteti modifica acest comentariu!";
+                    TempData["messageType"] = "alert-danger";
+                    return RedirectToAction("Show", "Posts", new { id = comment.First().PostId });
+                }
+            } else
             {
-                TempData["message"] = "Nu puteti modifica acest comentariu!";
+                TempData["message"] = "Ati incercat modificarea unui comentariu inexistent!";
                 TempData["messageType"] = "alert-danger";
-                // TODO where redirect?
-                return RedirectToAction("Index", "Posts");
+                return RedirectToAction("Show", "Posts");
             }
         }
 
@@ -91,13 +103,13 @@ namespace Cod.Controllers
                     db.SaveChanges();
                     TempData["message"] = "Comentariul a fost modificat cu succes!";
                     TempData["messageType"] = "alert-success";
-                    return RedirectToAction("Index", "Posts");
+                    return RedirectToAction("Show", "Posts", new { id = comment.PostId });
                 }
                 else
                 {
                     TempData["message"] = "Nu puteti modifica acest comentariu!";
                     TempData["messageType"] = "alert-danger";
-                    return RedirectToAction("Index", "Posts");
+                    return RedirectToAction("Show", "Posts", new { id = comment.PostId });
                 }
             }
             else
@@ -110,17 +122,26 @@ namespace Cod.Controllers
         [Authorize(Roles = "User,Admin")]
         public IActionResult Delete(int id)
         {
-            Comment comment = db.Comments.Where(x => x.Id == id).First();
-            if (comment.ProfileId == um.GetUserId(User) || User.IsInRole("Admin"))
+            var comment = db.Comments.Where(x => x.Id == id);
+            if (comment.Any())
             {
-                db.Comments.Remove(comment);
-                db.SaveChanges();
-                TempData["message"] = "Comentariul a fost sters cu succes!";
-                TempData["messageType"] = "alert-success";
-                return RedirectToAction("Index", "Posts");
+                if (comment.First().ProfileId == um.GetUserId(User) || User.IsInRole("Admin"))
+                {
+                    int? idpostare = comment.First().PostId;
+                    db.Comments.Remove(comment.First());
+                    db.SaveChanges();
+                    TempData["message"] = "Comentariul a fost sters cu succes!";
+                    TempData["messageType"] = "alert-success";
+                    return RedirectToAction("Show", "Posts", new { id = idpostare });
+                } else
+                {
+                    TempData["message"] = "Nu puteti sterge acest comentariu!";
+                    TempData["messageType"] = "alert-danger";
+                    return RedirectToAction("Show", "Posts", new { id = comment.First().PostId });
+                }
             } else
             {
-                TempData["message"] = "Nu puteti sterge acest comentariu!";
+                TempData["message"] = "Ati incercat stergerea unui comentariu care nu exista!";
                 TempData["messageType"] = "alert-danger";
                 return RedirectToAction("Index", "Posts");
             }

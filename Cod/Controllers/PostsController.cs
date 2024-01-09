@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Build.ObjectModelRemoting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
+using System.Text.RegularExpressions;
 
 namespace Cod.Controllers
 {
@@ -21,7 +22,7 @@ namespace Cod.Controllers
             um = _um;
         }
 
-        public IActionResult Index()
+        public ActionResult Index()
         {
             if (TempData.ContainsKey("message"))
             {
@@ -31,47 +32,67 @@ namespace Cod.Controllers
 
             var posts = db.Posts.Include("Profile").Include("Comments").Include("Group").Include("Comments.Profile").OrderBy(x => x.CreationDate);
             ViewBag.Posts = posts;
+            ViewBag.UserCurent = um.GetUserId(User);
 
             return View();
         }
 
         [HttpGet]
-        public IActionResult Show(int id)
+        public ActionResult Show(int id)
         {
-            Post post = db.Posts.Include("Profile").Include("Comments").Include("Group").Include("Comments.Profile").Where(x => x.Id == id).First();
-            return View(post);
+            var post = db.Posts.Include("Profile").Include("Comments").Include("Group").Include("Comments.Profile").Where(x => x.Id == id);
+            if (post.Any())
+            {   
+                ViewBag.UserCurent = um.GetUserId(User);
+                return View(post.First());
+            } else
+            {
+                TempData["message"] = "Ati incercat accesarea unei postari inexistente!";
+                TempData["messageType"] = "alert-danger";
+                return RedirectToAction("Index");
+            }
         }
 
+        // TODO de ce am nevoie de asta?
         [HttpPost]
-        public IActionResult Show([FromForm] Post post)
+        public ActionResult Show([FromForm] Post post)
         {
             return View(post);
         }
-
 
         [HttpGet]
         [Authorize(Roles = "User,Admin")]
-        public IActionResult New(int? id)
+        public ActionResult New(int? id)
         {
             if (id == null)
             {
+                TempData["message"] = "Ati incercat sa adaugati o postare fara sa precizati un grup!";
+                TempData["messageType"] = "alert-danger";
                 return RedirectToAction("Index", "Groups");
             }
-            Group group = db.Groups.Find(id);
+            var group = db.Groups.Find(id);
             if (group == null)
             {
+                TempData["message"] = "Ati incercat sa adaugati o postare la un grup inexistent!";
+                TempData["messageType"] = "alert-danger";
                 return RedirectToAction("Index", "Groups");
             }
-            // TODO inca pot posta ca user care nu a intrat in grup
-            // TODO daca ies din grup ce se intampla?
-            Post post = new Post();
-            post.GroupId = id;
-            return View(post);
+            if (db.UserGroup.Where(x => x.ProfileId == um.GetUserId(User) && x.GroupId == id).Any() || User.IsInRole("Admin"))
+            {
+                Post post = new Post();
+                post.GroupId = id;
+                return View(post);
+            } else
+            {
+                TempData["message"] = "Nu puteti posta in acest grup! Alaturati-va lui mai intai!";
+                TempData["messageType"] = "alert-danger";
+                return RedirectToAction("Show", "Groups", new { id = id });
+            }
         }
 
         [HttpPost]
         [Authorize(Roles = "User,Admin")]
-        public IActionResult New([FromForm] Post post)
+        public ActionResult New([FromForm] Post post)
         {
             post.ProfileId = um.GetUserId(User);
             post.CreationDate = DateTime.Now;
@@ -82,7 +103,7 @@ namespace Cod.Controllers
                 db.SaveChanges();
                 TempData["message"] = "Postarea a fost adaugata cu succes!";
                 TempData["messageType"] = "alert-success";
-                return RedirectToAction("Index", "Groups");
+                return RedirectToAction("Show", "Groups", new {id = post.GroupId});
             } else
             {
                 return View(post);
@@ -90,16 +111,26 @@ namespace Cod.Controllers
         }
 
         [HttpGet]
+        // TODO check if data exists!
         [Authorize(Roles = "User,Admin")]
-        public IActionResult Edit(int id)
+        public ActionResult Edit(int id)
         {
-            Post post = db.Posts.Include("Profile").Include("Group").Where(x => x.Id == id).First();
+            var post = db.Posts.Include("Profile").Include("Group").Where(x => x.Id == id);
 
-            if (post.ProfileId == um.GetUserId(User) || User.IsInRole("Admin"))
-                return View(post);
-            else
+            if (post.Any())
             {
-                TempData["message"] = "Nu aveti dreptul sa modificati postarea!";
+                if (post.First().ProfileId == um.GetUserId(User) || User.IsInRole("Admin"))
+                    return View(post.First());
+                else
+                {
+                    TempData["message"] = "Nu aveti dreptul sa modificati postarea!";
+                    TempData["messageType"] = "alert-danger";
+                    return RedirectToAction("Index");
+                }
+
+            } else
+            {
+                TempData["message"] = "Ati incercat modificarea unei postari inexistente!";
                 TempData["messageType"] = "alert-danger";
                 return RedirectToAction("Index");
             }
@@ -107,7 +138,7 @@ namespace Cod.Controllers
 
         [HttpPost]
         [Authorize(Roles = "User,Admin")]
-        public IActionResult Edit(int id, Post reqPost)
+        public ActionResult Edit(int id, Post reqPost)
         {
             Post post = db.Posts.Find(id);
             if (ModelState.IsValid)
@@ -119,12 +150,12 @@ namespace Cod.Controllers
                     db.SaveChanges();
                     TempData["message"] = "Postarea a fost modificata cu succes!";
                     TempData["messageType"] = "alert-success";
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Show", "Posts", new { id = id });
                 } else
                 {
                     TempData["message"] = "Nu aveti dreptul sa modificati postarea!";
                     TempData["messageType"] = "alert-danger";
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Show", "Posts", new { id = id });
                 }
             } else
             {
@@ -133,21 +164,30 @@ namespace Cod.Controllers
         }
 
         [HttpPost]
+        // TODO check if data exists!
         [Authorize(Roles = "User,Admin")]
-        public IActionResult Delete(int id)
+        public ActionResult Delete(int id)
         {
-            Post post = db.Posts.Where(x => x.Id == id).First();
-            if (post.ProfileId == um.GetUserId(User) || User.IsInRole("Admin"))
+            var post = db.Posts.Include("Comments").Where(x => x.Id == id);
+            if (post.Any())
             {
-                db.Posts.Remove(post);
-                db.SaveChanges();
-                TempData["message"] = "Postarea a fost stearsa cu succes!";
-                TempData["messageType"] = "alert-success";
-                return RedirectToAction("Index");
-            }
-            else
+                if (post.First().ProfileId == um.GetUserId(User) || User.IsInRole("Admin"))
+                {
+                    db.Posts.Remove(post.First());
+                    db.SaveChanges();
+                    TempData["message"] = "Postarea a fost stearsa cu succes!";
+                    TempData["messageType"] = "alert-success";
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    TempData["message"] = "Nu aveti dreptul sa stergeti postarea!";
+                    TempData["messageType"] = "alert-danger";
+                    return RedirectToAction("Index");
+                }
+            } else
             {
-                TempData["message"] = "Nu aveti dreptul sa stergeti postarea!";
+                TempData["message"] = "Ati incercat stergerea unei postari care nu exista!";
                 TempData["messageType"] = "alert-danger";
                 return RedirectToAction("Index");
             }

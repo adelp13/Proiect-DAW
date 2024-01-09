@@ -9,5 +9,14 @@
     </div>
     <div class="card=text ">@Model.Content</div>
 </div>
+@if (User.IsInRole("Admin") || ViewBag.UserCurent == Model.ProfileId)
+{
+<div class="d-flex flex-row justify-content-between">
+    <a class="btn btn-success" href="/Comments/Edit/@Model.Id">Modifica comentariu</a>
+    <form method="post" action="/Comments/Delete/@Model.Id">
+        <button class="btn btn-danger" type="submit">Sterge Comentariu</button>
+    </form>
+</div>
+}
 
 <!-- TODO modify (adauga click pe imagini ca sa poti vedea profilu)-->

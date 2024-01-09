@@ -8,24 +8,11 @@
 <br />
 
 <div class="card">
-    @Html.Partial("PostContent", Model)
-    <div class="d-flex flex-row justify-content-between p-2 pt-0">
-        <a class="btn btn-success" href="/Posts/Edit/@Model.Id">Modifica postare</a>
-        <a class="btn btn-success" href="/Comments/New/@Model.Id">Adauga comentariu</a>
-        <form method="post" action="/Posts/Delete/@Model.Id">
-            <button class="btn btn-danger" type="submit">Sterge postare</button>
-        </form>
-    </div>
+    @Html.Partial("PostShowContent", Model)
     @foreach (Comment comment in Model.Comments)
     {
         <div class="card m-2 p-2">
             @Html.Partial("CommentContent", comment)
-            <div class="d-flex flex-row justify-content-between">
-                <a class="btn btn-success" href="/Comments/Edit/@comment.Id">Modifica comentariu</a>
-                <form method="post" action="/Comments/Delete/@comment.Id">
-                    <button class="btn btn-danger" type="submit">Sterge Comentariu</button>
-                </form>
-            </div>
         </div>
     }
 </div>

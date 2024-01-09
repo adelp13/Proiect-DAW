@@ -14,34 +14,20 @@
 {
     <div class="card">
         @Html.Partial("GroupContent", group)
-        <div class="d-flex justify-content-between flex-row m-2 mt-0">
-            <a class="btn btn-success" href="/Groups/Show/@group.Id"> Afiseaza grup </a>
-            <a class="btn btn-success" href="/Groups/Edit/@group.Id"> Modifica grup </a>
-            <form method="post" action="/Groups/GroupJoin/@group.Id">
-                <button class="btn btn-success" type="submit"> Alatura-te grupului </button>
-            </form>
-            <form method="post" action="/Groups/Delete/@group.Id">
-                <button class="btn btn-danger" type="submit">Sterge grup</button>
-            </form>
-        </div>
-        @foreach (Cod.Models.Post post in group.Posts)
+        @* @foreach (Cod.Models.Post post in group.Posts)
         {
             <div class="card m-2 p-2">
                 @Html.Partial("PostContent", post)
-                <div class="d-flex flex-row justify-content-between">
-                    <a class="btn btn-success" href="/Posts/Edit/@post.Id">Modifica postare</a>
-                    <a class="btn btn-success" href="/Posts/Show/@post.Id">Afiseaza postare</a>
-                    <form method="post" action="/Posts/Delete/@post.Id">
-                        <button class="btn btn-danger" type="submit">Sterge postare</button>
-                    </form>
-                </div>
             </div>
-        }
+        } *@
     </div>
     <br />
 }
 <br />
-<div class="align-items-center justify-content-around d-flex">
-    <a class="btn btn-success" href="/Groups/New">Adauga grup</a>
-</div>
+@if (User.IsInRole("Admin"))
+{
+    <div class="align-items-center justify-content-around d-flex">
+        <a class="btn btn-success" href="/Groups/New">Adauga grup</a>
+    </div>
+}
 <br />

@@ -12,7 +12,6 @@
 @if (User.IsInRole("Admin"))
 {
     <div class="d-flex justify-content-between flex-row m-2 mt-0">
-        <a class="btn btn-success" href="/Groups/Show/@Model.Id"> Afiseaza grup </a>
         <a class="btn btn-success" href="/Groups/Edit/@Model.Id"> Modifica grup </a>
         <form method="post" action="/Groups/Delete/@Model.Id">
             <button class="btn btn-danger" type="submit">Sterge grup</button>
@@ -21,6 +20,16 @@
 } else
 {
     <div class="d-flex justify-content-center flex-row m-2 mt-0">
-        <a class="btn btn-success" href="/Groups/Show/@Model.Id"> Afiseaza grup </a>
+        @if (ViewBag.isInGroup)
+        {
+            <form method="post" action="/Groups/GroupJoin/@Model.Id">
+                <button class="btn btn-danger" type="submit"> Paraseste grupul </button>
+            </form>
+        } else
+        {
+            <form method="post" action="/Groups/GroupJoin/@Model.Id">
+                <button class="btn btn-success" type="submit"> Alatura-te grupului </button
+            </form>
+        }
     </div>
 }

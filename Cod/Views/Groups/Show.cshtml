@@ -1,6 +1,11 @@
-﻿@model Cod.Models.Group
+﻿@if (ViewBag.message != null)
+{
+    <div class="alert @ViewBag.messageType p-3 rounded-3 text-center mb-5" role="alert"> @ViewBag.message </div>
+}
+
+@model Cod.Models.Group
 @{
-    ViewBag.Title = "Afisare grup";
+    ViewBag.Title = @Model.Name;
 }
 
 <h1 class="text-center">@ViewBag.Title</h1>
@@ -8,32 +13,16 @@
 <br />
 
 <div class="card">
-    @Html.Partial("GroupContent", Model)
-    <div class="d-flex justify-content-between flex-row m-2 mt-0">
-        <a class="btn btn-success" href="/Groups/Edit/@Model.Id"> Modifica grup </a>
-        <a class="btn btn-success" href="/Posts/New/@Model.Id"> Adauga postare </a>
-        <form method="post" action="/Groups/GroupJoin/@Model.Id">
-            <button class="btn btn-success" type="submit"> Alatura-te grupului </button>
-        </form>
-        <form method="post" action="/Groups/Delete/@Model.Id">
-            <button class="btn btn-danger" type="submit">Sterge grup</button>
-        </form>
-    </div>
+    @Html.Partial("GroupShowContent", Model)
     @foreach (Cod.Models.Post post in Model.Posts)
     {
         <div class="card m-2 p-2">
             @Html.Partial("PostContent", post)
-            <div class="d-flex flex-row justify-content-between">
-                <a class="btn btn-success" href="/Posts/Edit/@post.Id">Modifica postare</a>
-                <a class="btn btn-success" href="/Posts/Show/@post.Id">Afiseaza postare</a>
-                <form method="post" action="/Posts/Delete/@post.Id">
-                    <button class="btn btn-danger" type="submit">Sterge postare</button>
-                </form>
-            </div>
         </div>
     }
 </div>
 <br />
-<div class="d-flex justify-content-center flex-row m-2 mt-0">
+<div class="d-flex justify-content-around flex-row m-2 mt-0">
     <a class="btn btn-success" href="/Groups/Index"> Afiseaza toate grupurile </a>
+    <a class="btn btn-success" href="/Posts/New/@Model.Id"> Adauga o postare </a>
 </div>
