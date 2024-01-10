@@ -1,12 +1,43 @@
 ﻿@model Cod.Models.ApplicationUser
-
-<!--vreau sa am un div care sa imi dea nume, prenume si o bifa daca sunt admin-->
+@* TODO adresa de mail si tipul de user sunt lalalalla*@
 
 <div class="card-body">
-    <div class="d-flex justify-content-between flex-row mt-5">
+    <div class="d-flex justify-content-between flex-row mb-2">
         <div>
             <i class="bi bi-person"></i> @Model.FirstName @Model.LastName 
-            @* @if (Model.isInRole("Admin")) {<i class="bi bi-check-lg"></i>} *@
         </div>
+        @if (!Model.isPrivate)
+        {
+            <div>
+                <i class="bi bi-unlock"></i> Utilizator Public
+            </div>
+        }
+        else
+        {
+            <div>
+                <i class="bi bi-lock"></i> Utilizator Privat
+            </div>
+        }
+            @* @if (Model.isInRole("Admin")) {<i class="bi bi-check-lg"></i>} *@
     </div>
 </div>
+@* TODO fa astea *@
+@if (User.IsInRole("Admin") || ViewBag.UserCurent == Model.Id)
+{
+    <div class="d-flex justify-content-between flex-row m-2 mt-0">
+        <form action="/ApplicationUsers/Show/@Model.Id">
+            <button class="btn btn-success" type="submit">Afiseaza utilizator</button>
+        </form>
+        <form method="post" action="/ApplicationUsers/Delete/@Model.Id">
+            <button class="btn btn-danger" type="submit">Sterge Utilizator</button>
+        </form>
+    </div>
+}
+else
+{
+    <div class="d-flex justify-content-center flex-row m-2 mt-0">
+        <form action="/ApplicationUsers/Show/@Model.Id">
+            <button class="btn btn-success" type="submit">Afiseaza utilizator</button>
+        </form>
+    </div>
+}

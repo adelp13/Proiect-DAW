@@ -14,7 +14,6 @@
     <div>@Model.Content</div>
 </div>
 
-@*// TODO check if it is correct*@
 @if (User.IsInRole("Admin") || ViewBag.UserCurent == Model.ProfileId)
 {
     <div class="d-flex justify-content-between flex-row m-2 mt-0">

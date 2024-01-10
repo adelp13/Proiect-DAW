@@ -1,4 +1,6 @@
-﻿@model Cod.Models.ApplicationUser
+﻿@* todo viewbag cu cerere trimisa*@
+
+@model Cod.Models.ApplicationUser
 
 @{
     ViewBag.Title = "Afiseaza utilizator";
@@ -8,4 +10,6 @@
 <hr />
 <br />
 
-@Html.Partial("ProfileDetails", Model)
+<div class="card">
+    @Html.Partial("ProfileShowDetails", Model)
+</div>
