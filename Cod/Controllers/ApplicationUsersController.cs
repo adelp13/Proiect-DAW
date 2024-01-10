@@ -226,6 +226,22 @@ namespace Cod.Controllers
             {
                 if (profile.First().Id == um.GetUserId(User) || User.IsInRole("Admin"))
                 {
+                    var follows = db.Follows.Where(x => x.FollowingProfileId == id || x.FollowedProfileId == id);
+                    var requests = db.FollowRequests.Where(x => x.RequestingProfileId == id || x.RequestedProfileId == id);
+                    foreach (var entry in follows)
+                    {
+                        db.Follows.Remove(entry);
+                    }
+                    foreach (var entry in requests)
+                    {
+                        db.FollowRequests.Remove(entry);
+                    }
+                    db.SaveChanges();
+                    if (profile.First().Id == um.GetUserId(User))
+                    {
+                        // TODO log user off before deleting
+                        this.SignOut();
+                    }
                     db.Profiles.Remove(profile.First());
                     db.SaveChanges();
                     TempData["message"] = "Profilul a fost sters cu succes!";
