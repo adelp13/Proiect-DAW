@@ -53,12 +53,12 @@ namespace Cod.Controllers
             }
         }
 
-        // TODO de ce am nevoie de asta?
-        [HttpPost]
-        public ActionResult Show([FromForm] Post post)
-        {
-            return View(post);
-        }
+        //// de ce am nevoie de asta?
+        //[HttpPost]
+        //public ActionResult Show([FromForm] Post post)
+        //{
+        //    return View(post);
+        //}
 
         [HttpGet]
         [Authorize(Roles = "User,Admin")]
@@ -111,7 +111,6 @@ namespace Cod.Controllers
         }
 
         [HttpGet]
-        // TODO check if data exists!
         [Authorize(Roles = "User,Admin")]
         public ActionResult Edit(int id)
         {

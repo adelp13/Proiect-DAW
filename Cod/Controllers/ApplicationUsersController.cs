@@ -22,7 +22,6 @@ namespace Cod.Controllers
             rm = _rm;
         }
 
-        // TODO sa las asta doar pentru admin?
         [Authorize(Roles = "User,Admin")]
         public IActionResult Index() {
             var cautare = "";
@@ -126,8 +125,6 @@ namespace Cod.Controllers
                 return RedirectToAction("Index");
             }
         }
-
-        // TODO verifica integritatea acestor metode (nu dau crash daca vreau sa accept aiurea de exemplu)
 
         [HttpPost]
         [Authorize(Roles = "User,Admin")]
