@@ -5,16 +5,16 @@
         <div>
             <i class="bi bi-globe"></i> @Model.Name
         </div>
-        <span>@Model.CreationDate</span>
+        <span><i class="bi bi-clock"></i> @Model.CreationDate</span>
     </div>
     <div>@Model.Description</div>
 </div>
 @if (User.IsInRole("Admin"))
 {
     <div class="d-flex justify-content-between flex-row m-2 mt-0">
-        <a class="btn btn-success" href="/Groups/Edit/@Model.Id"> Modifica grup </a>
+        <a class="btn btn-success" href="/Groups/Edit/@Model.Id"><i class="bi bi-pencil"></i> Modifica grup </a>
         <form method="post" action="/Groups/Delete/@Model.Id">
-            <button class="btn btn-danger" type="submit">Sterge grup</button>
+            <button class="btn btn-danger" type="submit"><i class="bi bi-trash"></i> Sterge grup</button>
         </form>
     </div>
 } else
@@ -23,12 +23,12 @@
         @if (ViewBag.isInGroup)
         {
             <form method="post" action="/Groups/GroupJoin/@Model.Id">
-                <button class="btn btn-danger" type="submit"> Paraseste grupul </button>
+                <button class="btn btn-danger" type="submit"><i class="bi bi-send-dash"></i> Paraseste grupul</button>
             </form>
         } else
         {
             <form method="post" action="/Groups/GroupJoin/@Model.Id">
-                <button class="btn btn-success" type="submit"> Alatura-te grupului </button
+                <button class="btn btn-success" type="submit"><i class="bi bi-send-plus"></i> Alatura-te grupului</button
             </form>
         }
     </div>

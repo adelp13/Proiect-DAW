@@ -25,7 +25,21 @@ namespace Cod.Controllers
         // TODO sa las asta doar pentru admin?
         [Authorize(Roles = "User,Admin")]
         public IActionResult Index() {
-            var users = db.Users;
+            var cautare = "";
+            var users = db.Users.OrderBy(x => x.FirstName);
+
+            if (Convert.ToString(HttpContext.Request.Query["cautare"]) != null)
+            {
+                cautare = Convert.ToString(HttpContext.Request.Query["cautare"]).Trim();
+
+                List<string> profileIds = db.Profiles.Where(x => x.FirstName.ToLower().Contains(cautare.ToLower()) || x.LastName.Contains(cautare) || 
+                                                                cautare.ToLower().Contains(x.FirstName.ToLower()) || cautare.ToLower().Contains(x.LastName.ToLower()))
+                                       .Select(x => x.Id).ToList();
+
+                users = db.Users.Where(x => profileIds.Contains(x.Id)).OrderBy(x => x.FirstName);
+            }
+
+            ViewBag.StringCautare = cautare;
             ViewBag.Users = users;
             return View();
         }
@@ -38,7 +52,7 @@ namespace Cod.Controllers
 
             if (id == um.GetUserId(User))
             {
-                TempData["message"] = "Nu aveti dreptul sa va urmariti pe dumeanvoastra!";
+                TempData["message"] = "Nu aveti dreptul sa va urmariti pe dumneavoastra!";
                 TempData["messageType"] = "alert-danger";
                 return RedirectToAction("Index");
             }

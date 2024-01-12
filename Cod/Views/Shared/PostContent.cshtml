@@ -16,16 +16,16 @@
 @if (User.IsInRole("Admin") || ViewBag.UserCurent == Model.ProfileId)
 {
     <div class="d-flex justify-content-between flex-row m-2 mt-0">
-        <a class="btn btn-success" href="/Posts/Show/@Model.Id"> Afiseaza postare </a>
+        <a class="btn btn-success" href="/Posts/Show/@Model.Id"><i class="bi bi-eye"></i> Afiseaza postare</a>
         <form method="post" action="/Posts/Delete/@Model.Id">
-            <button class="btn btn-danger" type="submit">Sterge postare</button>
+            <button class="btn btn-danger" type="submit"><i class="bi bi-trash"></i> Sterge postare</button>
         </form>
     </div>
 }
 else
 {
     <div class="d-flex justify-content-center flex-row m-2 mt-0">
-        <a class="btn btn-success" href="/Posts/Show/@Model.Id"> Afiseaza postare </a>
+        <a class="btn btn-success" href="/Posts/Show/@Model.Id"><i class="bi bi-eye"></i> Afiseaza postare</a>
     </div>
 }
 

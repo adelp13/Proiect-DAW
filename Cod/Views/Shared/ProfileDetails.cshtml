@@ -26,10 +26,10 @@
 {
     <div class="d-flex justify-content-between flex-row m-2 mt-0">
         <form action="/ApplicationUsers/Show/@Model.Id">
-            <button class="btn btn-success" type="submit">Afiseaza utilizator</button>
+            <button class="btn btn-success" type="submit"><i class="bi bi-eye"></i> Afiseaza utilizator</button>
         </form>
         <form method="post" action="/ApplicationUsers/Delete/@Model.Id">
-            <button class="btn btn-danger" type="submit">Sterge Utilizator</button>
+            <button class="btn btn-danger" type="submit"><i class="bi bi-trash"></i> Sterge Utilizator</button>
         </form>
     </div>
 }
@@ -37,7 +37,7 @@ else
 {
     <div class="d-flex justify-content-center flex-row m-2 mt-0">
         <form action="/ApplicationUsers/Show/@Model.Id">
-            <button class="btn btn-success" type="submit">Afiseaza utilizator</button>
+            <button class="btn btn-success" type="submit"><i class="bi bi-eye"></i> Afiseaza utilizator</button>
         </form>
     </div>
 }

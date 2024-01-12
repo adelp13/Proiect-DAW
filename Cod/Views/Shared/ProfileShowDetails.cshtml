@@ -48,26 +48,26 @@
         @if (ViewBag.StatusCerere == "Urmarind")
         {
             <form method="post" action="/ApplicationUsers/UnFollow/@Model.Id">
-                <button class="btn btn-danger" type="submit">Nu mai urmari</button>
+                <button class="btn btn-danger" type="submit"><i class="bi bi-person-dash"></i> Nu mai urmari</button>
             </form>
         }
         else if (ViewBag.StatusCerere == "Cerere")
         {
             <form>
-                <button class="btn btn-secondary" type="submit">Cerere trimisa...</button>
+                <button class="btn btn-secondary" type="submit"><i class="bi bi-person-gear"></i> Cerere trimisa...</button>
             </form>
         }
         else if (ViewBag.StatusCerere == "Fara")
         {
             <form method="post" action="/ApplicationUsers/AddFollow/@Model.Id">
-                <button class="btn btn-success" type="submit">Urmareste cont</button>
+                <button class="btn btn-success" type="submit"><i class="bi bi-person-add"></i> Urmareste cont</button>
             </form>
         }
     }
     @if (User.IsInRole("Admin") || ViewBag.UserCurent == Model.Id)
     {
         <form method="post" action="/ApplicationUsers/Delete/@Model.Id">
-            <button class="btn btn-danger" type="submit">Sterge cont</button>
+            <button class="btn btn-danger" type="submit"><i class="bi bi-trash"></i> Sterge cont</button>
         </form>
     }
 </div>

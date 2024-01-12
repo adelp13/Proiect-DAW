@@ -164,7 +164,6 @@ namespace Cod.Controllers
         }
 
         [HttpPost]
-        // TODO check if data exists!
         [Authorize(Roles = "User,Admin")]
         public ActionResult Delete(int id)
         {
