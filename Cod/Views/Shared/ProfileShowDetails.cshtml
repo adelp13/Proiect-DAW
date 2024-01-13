@@ -1,0 +1,73 @@
+﻿@model Cod.Models.ApplicationUser
+
+<div class="card-body">
+    <div class="d-flex justify-content-between flex-row mb-2">
+        <div>
+            <i class="bi bi-person"></i> @Model.FirstName @Model.LastName 
+        </div>
+        @if (!Model.isPrivate || ViewBag.canSeeProfile)
+        {
+            <div>
+                <i class="bi bi-mailbox"></i> @Model.Email
+            </div>
+        } else
+        {
+            <div>
+                <i class="bi bi-file-lock2"></i> Utilizator Privat
+            </div>
+        }
+    </div>
+    <br/>
+    @if (Model.isPrivate && (!User.IsInRole("Admin") && !ViewBag.canSeeProfile))
+    {
+        @* privat *@
+        <div class="d-flex justify-content-center flex-row m-2 mt-0">
+            <h4>Acest utilizator este privat! Urmariti-l pentru a putea vedea detalii despre cont!</h4>
+        </div>
+    } else
+    {
+        <div class="d-flex justify-content-between flex-row">
+            <div class="card p-2 text-center datacolor">
+                @if (@ViewBag.followedCount == "1")
+                {
+                    <h6>Un urmaritor</h6>
+                } else {
+                    <h6>@ViewBag.followedCount urmaritori</h6>
+                }
+            </div>
+            <div class="card p-2 text-center datacolor">
+                <h6>Urmareste @ViewBag.followingCount</h6>
+            </div>
+        </div>
+        @* public *@
+    }
+</div>
+<div class="d-flex justify-content-between flex-row m-2 mt-0">
+    @if (ViewBag.UserCurent != Model.Id)
+    {
+        @if (ViewBag.StatusCerere == "Urmarind")
+        {
+            <form method="post" action="/ApplicationUsers/UnFollow/@Model.Id">
+                <button class="btn btn-danger" type="submit"><i class="bi bi-person-dash"></i> Nu mai urmari</button>
+            </form>
+        }
+        else if (ViewBag.StatusCerere == "Cerere")
+        {
+            <form>
+                <button class="btn btn-secondary" type="submit"><i class="bi bi-person-gear"></i> Cerere trimisa...</button>
+            </form>
+        }
+        else if (ViewBag.StatusCerere == "Fara")
+        {
+            <form method="post" action="/ApplicationUsers/AddFollow/@Model.Id">
+                <button class="btn btn-success" type="submit"><i class="bi bi-person-add"></i> Urmareste cont</button>
+            </form>
+        }
+    }
+    @if (User.IsInRole("Admin") || ViewBag.UserCurent == Model.Id)
+    {
+        <form method="post" action="/ApplicationUsers/Delete/@Model.Id">
+            <button class="btn btn-danger" type="submit"><i class="bi bi-trash"></i> Sterge cont</button>
+        </form>
+    }
+</div>

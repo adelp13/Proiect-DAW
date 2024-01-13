@@ -1,0 +1,35 @@
+﻿@model Cod.Models.ApplicationUser
+@* TODO adresa de mail si tipul de user sunt lalalalla*@
+
+<div class="card-body">
+    <div class="d-flex justify-content-between flex-row mb-2">
+        <div>
+            <i class="bi bi-person"></i> @Model.FirstName @Model.LastName 
+        </div>
+        @if (!Model.isPrivate)
+        {
+            <div>
+                <i class="bi bi-unlock"></i> Utilizator Public
+                <br/>
+                <i class="bi bi-mailbox"></i> @Model.Email
+            </div>
+        }
+        else
+        {
+            <div>
+                <i class="bi bi-lock"></i> Utilizator Privat
+                <br/>
+                <i class="bi bi-mailbox"></i> @Model.Email
+            </div>
+        }
+            @* @if (Model.isInRole("Admin")) {<i class="bi bi-check-lg"></i>} *@
+    </div>
+</div>
+<div class="d-flex justify-content-between flex-row m-2 mt-0">
+    <form method="post" action="/ApplicationUsers/AcceptRequest/@Model.Id">
+        <button class="btn btn-success" type="submit"><i class="bi bi-person-check"></i> Accepta cerere</button>
+    </form>
+    <form method="post" action="/ApplicationUsers/DenyRequest/@Model.Id">
+        <button class="btn btn-danger" type="submit"><i class="bi bi-person-x"></i> Respinge cerere</button>
+    </form>
+</div>

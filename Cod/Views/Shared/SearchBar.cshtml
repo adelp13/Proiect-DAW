@@ -1,0 +1,7 @@
+﻿<form method="GET" asp-controller="ApplicationUsers" asp-action="Index">
+    <div class="input-group">
+        @* TODO ce face value? *@
+        <input type="text" class="form-control" placeholder="Cauta utilizator" name="cautare" value="@ViewBag.StringCautare">
+        <button class="btn btn-outline-success"type="submit">Cauta</button>
+    </div>
+</form>

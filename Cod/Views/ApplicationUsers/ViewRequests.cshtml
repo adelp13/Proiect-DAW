@@ -1,0 +1,18 @@
+﻿@{
+    ViewBag.Title = "Cereri de urmarire";
+}
+
+<h1 class="text-center"> @ViewBag.Title </h1>
+<hr />
+<br />
+
+@if (ViewBag.profiles != null)
+{
+    @foreach (ApplicationUser user in ViewBag.profiles)
+    {
+        <div class="card">
+            @Html.Partial("ProfileReqDetails", user)
+        </div>
+        <br />
+    }
+}
